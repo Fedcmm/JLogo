@@ -13,6 +13,8 @@ public interface Cursor {
 
     void setPlotting(boolean plotting);
 
+    void setPenSize(int size);
+
     void setLineColor(Color color);
 
     void setAreaColor(Color color);
