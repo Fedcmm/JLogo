@@ -7,5 +7,17 @@ import java.awt.Color;
  */
 public interface Canvas {
 
+    /**
+     * Changes the background color of the canvas
+     *
+     * @param color the new color
+     */
     void setBackColor(Color color);
+
+    /**
+     * Returns the <i>home</i> position of the canvas
+     *
+     * @return the <i>home</i> position of the canvas
+     */
+    Point getHome();
 }

@@ -5,7 +5,7 @@ import java.awt.Color;
 /**
  * Represents a line drawn in a Logo program
  */
-public abstract class Line {
+public class LogoLine implements Shape<String> {
 
     private final Point a;
     private final Point b;
@@ -13,10 +13,16 @@ public abstract class Line {
     private final Color color;
 
 
-    public Line(Point a, Point b, int size, Color color) {
+    public LogoLine(Point a, Point b, int size, Color color) {
         this.a = a;
         this.b = b;
         this.size = size;
         this.color = color;
+    }
+
+
+    @Override
+    public String draw() {
+        return null;
     }
 }
