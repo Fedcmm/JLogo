@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.api;
+package it.unicam.cs.pa.jlogo.api;
 
 /**
  * Represents a shape that can be drawn in a Logo program

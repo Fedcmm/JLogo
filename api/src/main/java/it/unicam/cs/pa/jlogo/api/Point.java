@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.api;
+package it.unicam.cs.pa.jlogo.api;
 
 /**
  * Holds coordinates for a point in a canvas
