@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.jlogo;
+package it.unicam.cs.pa.jlogo.model;
 
 /**
  * Represents a Logo program that can return its instructions one by one

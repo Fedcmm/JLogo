@@ -1,6 +1,7 @@
-package it.unicam.cs.pa.jlogo;
+package it.unicam.cs.pa.jlogo.model;
 
 import java.awt.Color;
+import java.util.Optional;
 
 /**
  * Represents a cursor in a Logo program
@@ -8,13 +9,14 @@ import java.awt.Color;
 public interface Cursor {
 
     /**
-     * Moves the cursor in the direction it is facing
+     * Moves the cursor
      *
      * @param distance the distance to travel. If negative, the cursor
      *                 will move backwards
-     * @return the position of the cursor after the movement
+     * @return the shape drawn by the movement, or {@link Optional#empty()} if
+     * drawing is disabled
      */
-    Point move(int distance);
+    Optional<Shape<?>> move(int distance);
 
     /**
      * Changes the direction of the cursor

@@ -1,5 +1,7 @@
 package it.unicam.cs.pa.jlogo;
 
+import it.unicam.cs.pa.jlogo.model.Shape;
+
 import java.awt.Color;
 
 /**

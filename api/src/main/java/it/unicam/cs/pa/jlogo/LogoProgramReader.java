@@ -1,5 +1,9 @@
 package it.unicam.cs.pa.jlogo;
 
+import it.unicam.cs.pa.jlogo.model.Instruction;
+import it.unicam.cs.pa.jlogo.model.Program;
+import it.unicam.cs.pa.jlogo.model.ProgramReader;
+
 import java.io.IOException;
 
 /**

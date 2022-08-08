@@ -1,5 +1,9 @@
 package it.unicam.cs.pa.jlogo;
 
+import it.unicam.cs.pa.jlogo.instruction.MoveInstruction;
+import it.unicam.cs.pa.jlogo.instruction.RepeatInstruction;
+import it.unicam.cs.pa.jlogo.model.Instruction;
+
 import java.io.IOException;
 
 /**
@@ -19,12 +23,28 @@ public class InstructionParser {
         String[] instArgs = s.split(" ");
         return switch (instArgs[0]) {
             case "FORWARD" -> parseForward(instArgs);
+            case "BACKWARD" -> parseBackward(instArgs);
+            case "REPEAT" -> parseRepeat(s.split("\n"));
 
             default -> throw new IOException("No parseable instruction found");
         };
     }
 
-    private ForwardInstruction parseForward(String[] args) {
+    // TODO: 08/08/22 Exceptions
+
+    private MoveInstruction parseForward(String[] args) {
+        return new MoveInstruction(Integer.parseInt(args[1]));
+    }
+
+    private MoveInstruction parseBackward(String[] args) {
+        return new MoveInstruction(-(Integer.parseInt(args[1])));
+    }
+
+    private RepeatInstruction parseRepeat(String[] args) {
+        int num = Integer.parseInt(args[0].split(" ")[1]);
+        for (int i = 1; i < args.length - 1; i++) {
+            // TODO: 08/08/22 List or LogoProgram?
+        }
         return null;
     }
 }

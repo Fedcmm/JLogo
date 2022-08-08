@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.jlogo;
+package it.unicam.cs.pa.jlogo.model;
 
 import java.io.File;
 import java.io.IOException;

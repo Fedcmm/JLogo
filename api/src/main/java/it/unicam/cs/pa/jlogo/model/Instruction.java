@@ -1,9 +1,9 @@
-package it.unicam.cs.pa.jlogo;
+package it.unicam.cs.pa.jlogo.model;
 
 /**
  * Represents an instruction in a Logo program
  */
 public interface Instruction {
 
-    void execute();
+    void execute(Canvas canvas);
 }
