@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.jlogo.api;
+package it.unicam.cs.pa.jlogo;
 
 /**
  * Represents an instruction in a Logo program

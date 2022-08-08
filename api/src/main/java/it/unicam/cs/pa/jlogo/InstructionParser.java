@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.jlogo.api;
+package it.unicam.cs.pa.jlogo;
 
 /**
  * This class parses Logo instructions from strings into {@link Instruction} objects
