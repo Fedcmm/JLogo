@@ -11,27 +11,31 @@ import java.util.List;
 public interface Canvas {
 
     /**
+     * Deletes all the drawings in this canvas
+     */
+    void clear();
+
+    void moveCursor(int distance);
+
+    /**
      * Changes the background color of the canvas
      *
      * @param color the new color
      */
     void setBackColor(Color color);
 
-    /**
-     * Deletes all the drawings in this canvas
-     */
-    void clear();
+    int getWidth();
 
-    /**
-     * Returns the <i>home</i> position of this canvas
-     *
-     * @return the <i>home</i> position of this canvas
-     */
-    Point getHome();
+    int getHeight();
 
     List<Shape<?>> getDrawings();
 
-    void moveCursor(int distance);
-
     Cursor getCursor();
+
+    /**
+     * @return the <i>home</i> position of this canvas
+     */
+    default Point getHome() {
+        return new Point(getWidth() / 2.0, getHeight() / 2.0);
+    }
 }

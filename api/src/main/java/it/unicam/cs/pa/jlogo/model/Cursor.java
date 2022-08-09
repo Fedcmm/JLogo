@@ -19,14 +19,12 @@ public interface Cursor {
     Optional<Shape<?>> move(int distance);
 
     /**
-     * Changes the direction of the cursor
+     * Rotates the cursor
      *
-     * @param direction the new direction, may be a value between 0 and 360
-     *
-     * @throws IllegalArgumentException if direction is not a value between
-     * 0 and 360
+     * @param degrees the amount of degrees of rotation, positive to rotate to the left,
+     *                negative to rotate to the right
      */
-    void setDirection(int direction);
+    void rotate(int degrees);
 
     /**
      * Changes the thickness of the lines drawn by the cursor
