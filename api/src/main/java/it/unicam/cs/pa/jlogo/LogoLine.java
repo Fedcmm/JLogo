@@ -1,13 +1,13 @@
 package it.unicam.cs.pa.jlogo;
 
-import it.unicam.cs.pa.jlogo.model.Shape;
+import it.unicam.cs.pa.jlogo.model.Line;
 
 import java.awt.Color;
 
 /**
  * Represents a line drawn in a Logo program
  */
-public class LogoLine implements Shape<String> {
+public class LogoLine implements Line {
 
     private final Point a;
     private final Point b;
@@ -24,7 +24,7 @@ public class LogoLine implements Shape<String> {
 
 
     @Override
-    public String draw() {
-        return null;
+    public boolean intersectsWith(Line other) {
+        return false;
     }
 }

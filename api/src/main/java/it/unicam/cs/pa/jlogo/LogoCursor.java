@@ -2,7 +2,7 @@ package it.unicam.cs.pa.jlogo;
 
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Cursor;
-import it.unicam.cs.pa.jlogo.model.Shape;
+import it.unicam.cs.pa.jlogo.model.Line;
 
 import java.awt.Color;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class LogoCursor implements Cursor {
 
 
     @Override
-    public Optional<Shape<?>> move(int distance) {
+    public Optional<Line> move(int distance) {
         if (distance == 0)
             return Optional.empty();
 

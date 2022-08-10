@@ -16,7 +16,7 @@ public interface Cursor {
      * @return the shape drawn by the movement, or {@link Optional#empty()} if
      * drawing is disabled
      */
-    Optional<Shape<?>> move(int distance);
+    Optional<Line> move(int distance);
 
     /**
      * Rotates the cursor

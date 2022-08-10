@@ -2,10 +2,13 @@ package it.unicam.cs.pa.jlogo;
 
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Cursor;
-import it.unicam.cs.pa.jlogo.model.Shape;
+import it.unicam.cs.pa.jlogo.model.Line;
 
 import java.awt.Color;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class LogoCanvas implements Canvas {
 
@@ -20,6 +23,7 @@ public class LogoCanvas implements Canvas {
         this.width = width;
         this.height = height;
         this.cursor = cursor; // new LogoCursor(this);
+
         backColor = Color.WHITE;
     }
 
@@ -31,8 +35,11 @@ public class LogoCanvas implements Canvas {
 
     @Override
     public void moveCursor(int distance) {
-        // TODO: 09/08/22 Add result
-        cursor.move(distance);
+        Optional<Line> result = cursor.move(distance);
+        if (result.isEmpty())
+            return;
+
+        Line line = result.get();
     }
 
     @Override
@@ -51,7 +58,7 @@ public class LogoCanvas implements Canvas {
     }
 
     @Override
-    public List<Shape<?>> getDrawings() {
+    public List<Line> getDrawings() {
         return null;
     }
 

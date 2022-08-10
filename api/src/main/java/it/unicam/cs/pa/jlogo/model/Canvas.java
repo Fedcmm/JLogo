@@ -28,7 +28,7 @@ public interface Canvas {
 
     int getHeight();
 
-    List<Shape<?>> getDrawings();
+    List<Line> getDrawings();
 
     Cursor getCursor();
 
