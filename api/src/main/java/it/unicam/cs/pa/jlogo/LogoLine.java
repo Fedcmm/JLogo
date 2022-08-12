@@ -24,6 +24,16 @@ public class LogoLine implements Line {
 
 
     @Override
+    public Point getA() {
+        return a;
+    }
+
+    @Override
+    public Point getB() {
+        return b;
+    }
+
+    @Override
     public boolean intersectsWith(Line other) {
         return false;
     }

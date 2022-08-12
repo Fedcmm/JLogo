@@ -33,6 +33,20 @@ public interface Canvas {
     Cursor getCursor();
 
     /**
+     * Registers a callback to be invoked when a new line is drawn
+     *
+     * @param listener the callback
+     */
+    void setOnLineDrawnListener(OnLineDrawnListener listener);
+
+    /**
+     * Registers a callback to be invoked when a new closed area is created
+     *
+     * @param listener the callback
+     */
+    void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener);
+
+    /**
      * @return the <i>home</i> position of this canvas
      */
     default Point getHome() {
