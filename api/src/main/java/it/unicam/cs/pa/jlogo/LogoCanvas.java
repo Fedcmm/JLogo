@@ -28,10 +28,10 @@ public class LogoCanvas implements Canvas {
     private OnClosedAreaDrawnListener areaListener;
 
 
-    public LogoCanvas(int width, int height, Cursor cursor) {
+    public LogoCanvas(int width, int height) {
         this.width = width;
         this.height = height;
-        this.cursor = cursor; // new LogoCursor(this);
+        this.cursor = new LogoCursor(this);
 
         backColor = Color.WHITE;
     }

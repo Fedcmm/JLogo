@@ -1,7 +1,7 @@
 package it.unicam.cs.pa.jlogo;
 
-import it.unicam.cs.pa.jlogo.instruction.MoveInstruction;
-import it.unicam.cs.pa.jlogo.instruction.RepeatInstruction;
+import it.unicam.cs.pa.jlogo.instructions.MoveInstruction;
+import it.unicam.cs.pa.jlogo.instructions.RepeatInstruction;
 import it.unicam.cs.pa.jlogo.model.Instruction;
 
 import java.io.IOException;

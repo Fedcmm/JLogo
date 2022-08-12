@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.jlogo.instruction;
+package it.unicam.cs.pa.jlogo.instructions;
 
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Instruction;
