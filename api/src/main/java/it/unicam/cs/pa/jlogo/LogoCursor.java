@@ -3,6 +3,8 @@ package it.unicam.cs.pa.jlogo;
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Cursor;
 import it.unicam.cs.pa.jlogo.model.Line;
+import it.unicam.cs.pa.jlogo.model.OnPlottingStoppedListener;
+import it.unicam.cs.pa.jlogo.util.CircularList;
 
 import java.awt.Color;
 import java.util.Optional;
@@ -17,6 +19,9 @@ public class LogoCursor implements Cursor {
     private boolean plotting;
     private Color lineColor;
     private Color areaColor;
+
+    private CircularList<Line> currentLines;
+    private OnPlottingStoppedListener plottingStoppedListener;
 
 
     public LogoCursor(Canvas canvas) {
@@ -39,9 +44,7 @@ public class LogoCursor implements Cursor {
         Point initialPosition = position;
         position = calculateNextPosition(distance);
 
-        return plotting ?
-                Optional.of(new LogoLine(initialPosition, position, penSize, lineColor)) :
-                Optional.empty();
+        return draw(initialPosition, position);
     }
 
     @Override
@@ -56,6 +59,10 @@ public class LogoCursor implements Cursor {
 
     @Override
     public void setPlotting(boolean plotting) {
+        if (this.plotting && !plotting && currentLines != null) {
+            plottingStoppedListener.onPlottingStopped(new LogoClosedArea(currentLines, areaColor));
+            currentLines = null;
+        }
         this.plotting = plotting;
     }
 
@@ -69,6 +76,11 @@ public class LogoCursor implements Cursor {
         areaColor = color;
     }
 
+    @Override
+    public void setOnPlottingStoppedListener(OnPlottingStoppedListener listener) {
+        plottingStoppedListener = listener;
+    }
+
     private Point calculateNextPosition(int distance) {
         double angle = Math.toRadians(direction);
 
@@ -78,6 +90,19 @@ public class LogoCursor implements Cursor {
         double x = hDist + position.x();
         double y = vDist + position.y();
         return validateCoordinates(x, y);
+    }
+
+    private Optional<Line> draw(Point a, Point b) {
+        if (!plotting)
+            return Optional.empty();
+
+        Line line = new LogoLine(a, b, penSize, lineColor);
+        if (currentLines == null) {
+            currentLines = new CircularList<>(line, Line::isConnectedTo);
+            return Optional.of(line);
+        }
+        currentLines.add(line);
+        return Optional.of(line);
     }
 
     private Point validateCoordinates(double x, double y) {

@@ -40,7 +40,7 @@ public interface Canvas {
     void setOnLineDrawnListener(OnLineDrawnListener listener);
 
     /**
-     * Registers a callback to be invoked when a new closed area is created
+     * Registers a callback to be invoked when a new <b>complete</b> closed area is created
      *
      * @param listener the callback
      */

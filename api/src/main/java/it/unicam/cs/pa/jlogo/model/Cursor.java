@@ -56,4 +56,11 @@ public interface Cursor {
      * @param color the new color
      */
     void setAreaColor(Color color);
+
+    /**
+     * Registers a callback to be invoked when the cursor stops plotting
+     *
+     * @param listener the callback
+     */
+    void setOnPlottingStoppedListener(OnPlottingStoppedListener listener);
 }

@@ -50,7 +50,7 @@ public class LogoCanvas implements Canvas {
             return;
 
         Line line = result.get();
-
+        lines.add(line);
         lineListener.lineDrawn(line);
     }
 
@@ -87,5 +87,14 @@ public class LogoCanvas implements Canvas {
     @Override
     public void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener) {
         areaListener = listener;
+    }
+
+    private void handleClosedArea(ClosedArea area) {
+        if (area.isComplete()) {
+            area.getLines().forEach(lines::remove);
+            if (areaListener != null) areaListener.closedAreaDrawn(area);
+        }
+        areas.add(area);
+        //areas.stream().filter(ClosedArea::isComplete).reduce()
     }
 }

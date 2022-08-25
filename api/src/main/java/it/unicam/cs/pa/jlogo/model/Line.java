@@ -24,4 +24,6 @@ public interface Line {
      * @return <code>true</code> if the two lines intersect, <code>false</code> otherwise
      */
     boolean intersectsWith(Line other);
+
+    boolean isConnectedTo(Line other); // TODO: 13/08/22 Name
 }

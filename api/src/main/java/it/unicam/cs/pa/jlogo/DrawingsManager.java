@@ -3,12 +3,14 @@ package it.unicam.cs.pa.jlogo;
 import it.unicam.cs.pa.jlogo.model.ClosedArea;
 import it.unicam.cs.pa.jlogo.model.Line;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class DrawingsManager {
 
-    private final Set<Line> lines = new HashSet<>();
+    private final List<Line> lines = new ArrayList<>();
     private final Set<ClosedArea> areas = new HashSet<>();
 
 
@@ -22,7 +24,7 @@ public class DrawingsManager {
         lines.add(line);
     }
 
-    public Set<Line> getLines() {
+    public List<Line> getLines() {
         return lines;
     }
 

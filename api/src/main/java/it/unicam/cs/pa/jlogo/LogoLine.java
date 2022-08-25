@@ -35,6 +35,23 @@ public class LogoLine implements Line {
 
     @Override
     public boolean intersectsWith(Line other) {
+        if (a.checkPositionOnX(b) < 0 && b.checkPositionOnX(other.getA()) < 0 && other.getA().checkPositionOnX(other.getB()) < 0)
+            return false;
+        if (a.checkPositionOnY(b) < 0 && b.checkPositionOnY(other.getA()) < 0 && other.getA().checkPositionOnY(other.getB()) < 0)
+            return false;
+
+        if (a.checkPositionOnX(b) > 0 && b.checkPositionOnX(other.getA()) > 0 && other.getA().checkPositionOnX(other.getB()) > 0)
+            return false;
+        if (a.checkPositionOnY(b) > 0 && b.checkPositionOnY(other.getA()) > 0 && other.getA().checkPositionOnY(other.getB()) > 0)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public boolean isConnectedTo(Line other) {
+        if (this.equals(other))
+            return false;
         return false;
     }
 }
