@@ -24,11 +24,29 @@ public interface Canvas {
      */
     void setBackColor(Color color);
 
-    int getWidth();
+    /**
+     * @return the background color of this canvas
+     */
+    Color getBackColor();
 
+    /**
+     * @return the width of this canvas
+     */
+    int getWidth();
+    /**
+     * @return the height of this canvas
+     */
     int getHeight();
 
-    List<Line> getDrawings();
+    /**
+     * @return the lines contained in this canvas
+     */
+    List<Line> getLines();
+
+    /**
+     * @return the complete closed areas contained in this canvas
+     */
+    List<ClosedArea> getClosedAreas();
 
     Cursor getCursor();
 

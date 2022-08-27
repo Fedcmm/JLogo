@@ -3,6 +3,7 @@ package it.unicam.cs.pa.jlogo;
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Cursor;
 import it.unicam.cs.pa.jlogo.model.Line;
+import it.unicam.cs.pa.jlogo.model.OnClosedAreaDrawnListener;
 import it.unicam.cs.pa.jlogo.model.OnPlottingStoppedListener;
 import it.unicam.cs.pa.jlogo.util.CircularList;
 
@@ -21,7 +22,7 @@ public class LogoCursor implements Cursor {
     private Color areaColor;
 
     private CircularList<Line> currentLines;
-    private OnPlottingStoppedListener plottingStoppedListener;
+    private OnClosedAreaDrawnListener areaListener;
 
 
     public LogoCursor(Canvas canvas) {
@@ -60,8 +61,8 @@ public class LogoCursor implements Cursor {
     @Override
     public void setPlotting(boolean plotting) {
         if (this.plotting && !plotting && currentLines != null) {
-            plottingStoppedListener.onPlottingStopped(new LogoClosedArea(currentLines, areaColor));
-            currentLines = null;
+            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
+            currentLines = null; // TODO: 27/08/22 Use clear
         }
         this.plotting = plotting;
     }
@@ -77,8 +78,8 @@ public class LogoCursor implements Cursor {
     }
 
     @Override
-    public void setOnPlottingStoppedListener(OnPlottingStoppedListener listener) {
-        plottingStoppedListener = listener;
+    public void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener) {
+        areaListener = listener;
     }
 
     private Point calculateNextPosition(int distance) {
@@ -102,6 +103,10 @@ public class LogoCursor implements Cursor {
             return Optional.of(line);
         }
         currentLines.add(line);
+        if (currentLines.isComplete()) {
+            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
+            return Optional.empty();
+        }
         return Optional.of(line);
     }
 

@@ -88,8 +88,9 @@ public class CircularList<E> implements Collection<E> {
         return a;
     }
 
+    @Override
     public boolean add(E e) {
-        if (!addCheck(e))
+        if (addCheck(e))
             return false;
 
         Node<E> newNode = new Node<>(e, last);
@@ -134,11 +135,14 @@ public class CircularList<E> implements Collection<E> {
         throwUnsupported();
     }
 
-    private boolean addCheck(E elem) {
-        if (isComplete())
-            throw new IllegalStateException("Attempt to add an element in a complete list");
-
-        return connectPredicate.test(elem, last.elem);
+    /**
+     * Checks if the given element can be added to this list
+     *
+     * @param e the element
+     * @return <code>true</code> if the element can <b>not</b> be added to this list
+     */
+    private boolean addCheck(E e) {
+        return isComplete() || !connectPredicate.test(e, last.elem);
     }
 
     private boolean throwUnsupported() {

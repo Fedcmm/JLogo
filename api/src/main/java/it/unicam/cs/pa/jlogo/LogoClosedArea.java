@@ -35,12 +35,22 @@ public class LogoClosedArea implements ClosedArea {
     }
 
     @Override
-    public Line getLast() {
+    public Line getFirstLine() {
+        return null;
+    }
+
+    @Override
+    public Line getLastLine() {
         return null;
     }
 
     @Override
     public List<Line> getLines() {
         return List.copyOf(lines);
+    }
+
+    @Override
+    public ClosedArea join(ClosedArea other) {
+        return null;
     }
 }

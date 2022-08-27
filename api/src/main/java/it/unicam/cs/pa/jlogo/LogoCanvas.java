@@ -8,10 +8,10 @@ import it.unicam.cs.pa.jlogo.model.OnClosedAreaDrawnListener;
 import it.unicam.cs.pa.jlogo.model.OnLineDrawnListener;
 
 import java.awt.Color;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Predicate;
 
 public class LogoCanvas implements Canvas {
 
@@ -19,8 +19,8 @@ public class LogoCanvas implements Canvas {
     private final int height;
     private final Cursor cursor;
 
-    private final Set<Line> lines = new HashSet<>();
-    private final Set<ClosedArea> areas = new HashSet<>();
+    private final List<Line> lines = new ArrayList<>();
+    private final List<ClosedArea> areas = new ArrayList<>();
 
     private Color backColor;
 
@@ -34,6 +34,7 @@ public class LogoCanvas implements Canvas {
         this.cursor = new LogoCursor(this);
 
         backColor = Color.WHITE;
+        cursor.setOnClosedAreaDrawnListener(this::receiveClosedArea);
     }
 
 
@@ -51,12 +52,17 @@ public class LogoCanvas implements Canvas {
 
         Line line = result.get();
         lines.add(line);
-        lineListener.lineDrawn(line);
+        if (lineListener != null) lineListener.lineDrawn(line);
     }
 
     @Override
     public void setBackColor(Color color) {
         backColor = color;
+    }
+
+    @Override
+    public Color getBackColor() {
+        return backColor;
     }
 
     @Override
@@ -70,8 +76,13 @@ public class LogoCanvas implements Canvas {
     }
 
     @Override
-    public List<Line> getDrawings() {
-        return null;
+    public List<Line> getLines() {
+        return List.copyOf(lines);
+    }
+
+    @Override
+    public List<ClosedArea> getClosedAreas() {
+        return areas.stream().filter(ClosedArea::isComplete).toList();
     }
 
     @Override
@@ -89,12 +100,32 @@ public class LogoCanvas implements Canvas {
         areaListener = listener;
     }
 
-    private void handleClosedArea(ClosedArea area) {
+    private void receiveClosedArea(ClosedArea area) {
+        areas.add(joinAreas(area));
+
         if (area.isComplete()) {
+            // TODO: 27/08/22 Check lines in existing complete areas
             area.getLines().forEach(lines::remove);
             if (areaListener != null) areaListener.closedAreaDrawn(area);
         }
-        areas.add(area);
-        //areas.stream().filter(ClosedArea::isComplete).reduce()
+    }
+
+    /**
+     * Finds all the areas connected to the given one and joins them
+     *
+     * @param area the area to join
+     * @return the new area created by joining all the connected ones,
+     * or <code>area</code> if none was found
+     */
+    private ClosedArea joinAreas(ClosedArea area) {
+        List<ClosedArea> connectedAreas = areas.stream()
+                .filter(Predicate.not(ClosedArea::isComplete))
+                .filter(area::isConnectedTo).toList();
+        for (ClosedArea a : connectedAreas) {
+            area = area.join(a);
+        }
+
+        areas.removeIf(area::isConnectedTo);
+        return area;
     }
 }

@@ -62,5 +62,5 @@ public interface Cursor {
      *
      * @param listener the callback
      */
-    void setOnPlottingStoppedListener(OnPlottingStoppedListener listener);
+    void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener);
 }
