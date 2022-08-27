@@ -36,12 +36,12 @@ public class LogoClosedArea implements ClosedArea {
 
     @Override
     public Line getFirstLine() {
-        return null;
+        return lines.getFirst();
     }
 
     @Override
     public Line getLastLine() {
-        return null;
+        return lines.getLast();
     }
 
     @Override
@@ -51,6 +51,7 @@ public class LogoClosedArea implements ClosedArea {
 
     @Override
     public ClosedArea join(ClosedArea other) {
-        return null;
+        other.getLines().forEach(this::addLine);
+        return this;
     }
 }

@@ -4,7 +4,6 @@ import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Cursor;
 import it.unicam.cs.pa.jlogo.model.Line;
 import it.unicam.cs.pa.jlogo.model.OnClosedAreaDrawnListener;
-import it.unicam.cs.pa.jlogo.model.OnPlottingStoppedListener;
 import it.unicam.cs.pa.jlogo.util.CircularList;
 
 import java.awt.Color;
@@ -13,6 +12,7 @@ import java.util.Optional;
 public class LogoCursor implements Cursor {
 
     private final Canvas canvas;
+    private final CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
 
     private Point position;
     private int direction;
@@ -21,7 +21,6 @@ public class LogoCursor implements Cursor {
     private Color lineColor;
     private Color areaColor;
 
-    private CircularList<Line> currentLines;
     private OnClosedAreaDrawnListener areaListener;
 
 
@@ -45,7 +44,7 @@ public class LogoCursor implements Cursor {
         Point initialPosition = position;
         position = calculateNextPosition(distance);
 
-        return draw(initialPosition, position);
+        return plotting ? draw(initialPosition, position) : Optional.empty();
     }
 
     @Override
@@ -60,9 +59,8 @@ public class LogoCursor implements Cursor {
 
     @Override
     public void setPlotting(boolean plotting) {
-        if (this.plotting && !plotting && currentLines != null) {
-            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
-            currentLines = null; // TODO: 27/08/22 Use clear
+        if (this.plotting && !plotting) {
+            callListener();
         }
         this.plotting = plotting;
     }
@@ -94,17 +92,11 @@ public class LogoCursor implements Cursor {
     }
 
     private Optional<Line> draw(Point a, Point b) {
-        if (!plotting)
-            return Optional.empty();
-
         Line line = new LogoLine(a, b, penSize, lineColor);
-        if (currentLines == null) {
-            currentLines = new CircularList<>(line, Line::isConnectedTo);
-            return Optional.of(line);
-        }
         currentLines.add(line);
+
         if (currentLines.isComplete()) {
-            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
+            callListener();
             return Optional.empty();
         }
         return Optional.of(line);
@@ -122,5 +114,12 @@ public class LogoCursor implements Cursor {
             y = canvas.getHeight();
 
         return new Point(x, y);
+    }
+
+    private void callListener() {
+        if (areaListener != null) {
+            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
+            currentLines.clear();
+        }
     }
 }

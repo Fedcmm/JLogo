@@ -34,7 +34,8 @@ public interface ClosedArea {
     List<Line> getLines();
 
     /**
-     * Joins this area with the given one
+     * Joins this area with the given one, the fill color of the resulting area
+     * will be the same as the caller of this method
      *
      * @param other the area to join to this one
      * @return the new area

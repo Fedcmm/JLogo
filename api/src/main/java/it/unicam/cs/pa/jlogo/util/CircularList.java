@@ -2,30 +2,41 @@ package it.unicam.cs.pa.jlogo.util;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
 /**
- * A two-way linked list where all elements are logically connected by the given {@link BiPredicate}.
- * The list allows its elements to circle back to the first one, once this happens no more elements
+ * A simple linked list where all elements are logically connected by the given {@link BiPredicate}.
+ * The list allows its elements to connect back to the first one, once this happens no more elements
  * can to be added
  *
  * @param <E> the type of the elements in this list
  */
 public class CircularList<E> implements Collection<E> {
 
+    private int size = 0;
+    private int modCount = 0;
+
     private final BiPredicate<E, E> connectPredicate;
 
-    private final Node<E> first;
+    private Node<E> first;
     private Node<E> last;
 
 
-    public CircularList(E first, BiPredicate<E, E> connectPredicate) {
-        this.connectPredicate = connectPredicate;
-        this.first = new Node<E>(first, null);
-        this.last = this.first;
+    /**
+     * Constructs an empty list, all elements inserted will have to satisfy the given
+     * {@link BiPredicate}
+     *
+     * @param connectPredicate the predicate that will logically link all the elements
+     *                         of this list
+     *
+     * @throws NullPointerException if the predicate is null
+     */
+    public CircularList(BiPredicate<E, E> connectPredicate) {
+        this.connectPredicate = Objects.requireNonNull(connectPredicate);
     }
 
 
@@ -35,16 +46,12 @@ public class CircularList<E> implements Collection<E> {
 
     @Override
     public int size() {
-        int size = 0;
-        for (E ignored : this) {
-            size++;
-        }
         return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return first == null;
     }
 
     @Override
@@ -84,7 +91,6 @@ public class CircularList<E> implements Collection<E> {
 
         if (a.length > size())
             a[size()] = null;
-
         return a;
     }
 
@@ -93,11 +99,7 @@ public class CircularList<E> implements Collection<E> {
         if (addCheck(e))
             return false;
 
-        Node<E> newNode = new Node<>(e, last);
-        last.next = newNode;
-        last = newNode;
-        if (connectPredicate.test(last.elem, first.elem))
-            last.next = first;
+        addElement(e);
         return true;
     }
 
@@ -132,17 +134,37 @@ public class CircularList<E> implements Collection<E> {
 
     @Override
     public void clear() {
-        throwUnsupported();
+        first = last = null;
+        modCount++;
+    }
+
+    public E getFirst() {
+        return first.elem;
+    }
+
+    public E getLast() {
+        return last.elem;
     }
 
     /**
      * Checks if the given element can be added to this list
      *
-     * @param e the element
      * @return <code>true</code> if the element can <b>not</b> be added to this list
      */
     private boolean addCheck(E e) {
         return isComplete() || !connectPredicate.test(e, last.elem);
+    }
+
+    private void addElement(E e) {
+        Node<E> newNode = new Node<>(e);
+        if (first == null)
+            first = newNode;
+        else
+            last.next = newNode;
+        last = newNode;
+        if (connectPredicate.test(last.elem, first.elem))
+            last.next = first;
+        size++; modCount++;
     }
 
     private boolean throwUnsupported() {
@@ -152,35 +174,34 @@ public class CircularList<E> implements Collection<E> {
 
     private static class Node<E> {
 
-        final E elem;
-        Node<E> next;
-        Node<E> prev;
+        private final E elem;
+        private Node<E> next;
 
-        public Node(E elem, Node<E> prev) {
+        public Node(E elem) {
             this.elem = elem;
-            this.prev = prev;
         }
     }
 
     private class CircularIterator implements Iterator<E> {
 
-        Node<E> current = first;
-        int returned = 0;
+        private final int expectedModCount = modCount;
+        private Node<E> current = first;
 
 
         @Override
         public boolean hasNext() {
-            return returned != 0 && current != first;
+            return current != null && current.next != null;
         }
 
         @Override
         public E next() {
-            if (current.next == null || (returned != 0 && current == first))
+            if (modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+            if (!hasNext())
                 throw new NoSuchElementException("The iterator has no more elements");
 
             E result = current.elem;
             current = current.next;
-            returned++;
             return result;
         }
     }
