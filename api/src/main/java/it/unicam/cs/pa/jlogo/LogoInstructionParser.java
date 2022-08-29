@@ -3,23 +3,17 @@ package it.unicam.cs.pa.jlogo;
 import it.unicam.cs.pa.jlogo.instructions.RepeatInstruction;
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Instruction;
+import it.unicam.cs.pa.jlogo.model.InstructionParser;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * This class parses Logo instructions from strings into {@link Instruction} objects
+ * This class can parse the standard set of Logo instructions
  */
-public class InstructionParser {
+public class LogoInstructionParser implements InstructionParser {
 
-    /**
-     * Parses a string into an {@link Instruction}
-     *
-     * @param s the string containing the instruction text
-     * @return the parsed instruction
-     *
-     * @throws IOException if the string is malformed or contains no instruction
-     */
+    @Override
     public Instruction parse(String s) throws IOException {
         String[] instArgs = s.split(" ");
         return switch (instArgs[0]) {
