@@ -15,8 +15,6 @@ public interface Canvas {
      */
     void clear();
 
-    void moveCursor(int distance);
-
     /**
      * Changes the background color of the canvas
      *
@@ -50,6 +48,8 @@ public interface Canvas {
 
     Cursor getCursor();
 
+    void moveCursor(int distance);
+
     /**
      * Registers a callback to be invoked when a new line is drawn
      *
@@ -69,5 +69,9 @@ public interface Canvas {
      */
     default Point getHome() {
         return new Point(getWidth() / 2.0, getHeight() / 2.0);
+    }
+
+    default void setBackColor(int r, int g, int b) {
+        setBackColor(new Color(r, g, b));
     }
 }

@@ -30,8 +30,7 @@ public class CircularList<E> implements Collection<E> {
      * Constructs an empty list, all elements inserted will have to satisfy the given
      * {@link BiPredicate}
      *
-     * @param connectPredicate the predicate that will logically link all the elements
-     *                         of this list
+     * @param connectPredicate the predicate that will link all the elements of this list
      *
      * @throws NullPointerException if the predicate is null
      */
@@ -152,7 +151,7 @@ public class CircularList<E> implements Collection<E> {
      * @return <code>true</code> if the element can <b>not</b> be added to this list
      */
     private boolean addCheck(E e) {
-        return isComplete() || !connectPredicate.test(e, last.elem);
+        return isComplete() || (last != null && !connectPredicate.test(e, last.elem));
     }
 
     private void addElement(E e) {

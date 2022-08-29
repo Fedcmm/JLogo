@@ -21,8 +21,8 @@ public interface Cursor {
     /**
      * Rotates the cursor
      *
-     * @param degrees the amount of degrees of rotation, positive to rotate to the left,
-     *                negative to rotate to the right
+     * @param degrees the amount of degrees of rotation, positive to rotate counterclockwise,
+     *                negative to rotate clockwise
      */
     void rotate(int degrees);
 
@@ -63,4 +63,12 @@ public interface Cursor {
      * @param listener the callback
      */
     void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener);
+
+    default void setLineColor(int r, int g, int b) {
+        setLineColor(new Color(r, g, b));
+    }
+
+    default void setAreaColor(int r, int g, int b) {
+        setAreaColor(new Color(r, g, b));
+    }
 }

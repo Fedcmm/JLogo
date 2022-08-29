@@ -45,17 +45,6 @@ public class LogoCanvas implements Canvas {
     }
 
     @Override
-    public void moveCursor(int distance) {
-        Optional<Line> result = cursor.move(distance);
-        if (result.isEmpty())
-            return;
-
-        Line line = result.get();
-        lines.add(line);
-        if (lineListener != null) lineListener.lineDrawn(line);
-    }
-
-    @Override
     public void setBackColor(Color color) {
         backColor = color;
     }
@@ -88,6 +77,17 @@ public class LogoCanvas implements Canvas {
     @Override
     public Cursor getCursor() {
         return cursor;
+    }
+
+    @Override
+    public void moveCursor(int distance) {
+        Optional<Line> result = cursor.move(distance);
+        if (result.isEmpty())
+            return;
+
+        Line line = result.get();
+        lines.add(line);
+        if (lineListener != null) lineListener.lineDrawn(line);
     }
 
     @Override

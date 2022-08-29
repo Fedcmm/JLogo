@@ -102,7 +102,10 @@ public class LogoCursor implements Cursor {
         return Optional.of(line);
     }
 
-    private Point validateCoordinates(double x, double y) {
+    // x -x1       y -y1
+    //-------  =  -------
+    // x2-x1       y2-y1
+    private Point validateCoordinates(double x, double y) { // TODO: 27/08/22 Improve
         if (x < 0)
             x = 0;
         if (x > canvas.getWidth())

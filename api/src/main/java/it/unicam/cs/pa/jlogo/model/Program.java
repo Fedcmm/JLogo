@@ -19,4 +19,9 @@ public interface Program {
      * returned by {@link Program#next()}, <code>false</code> otherwise
      */
     boolean hasNext();
+
+    /**
+     * Resets the execution of this program to the first instruction
+     */
+    void reset();
 }
