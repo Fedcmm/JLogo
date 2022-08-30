@@ -80,6 +80,15 @@ public class LogoCursor implements Cursor {
         areaListener = listener;
     }
 
+    public int getDistanceFromHome() {
+        Point home = canvas.getHome();
+
+        double dX = Math.abs(home.x() - position.x());
+        double dY = Math.abs(home.y() - position.y());
+
+        return (int) Math.round(Math.sqrt((dX*dX) + (dY*dY)));
+    }
+
     private Point calculateNextPosition(int distance) {
         double angle = Math.toRadians(direction);
 
@@ -102,9 +111,7 @@ public class LogoCursor implements Cursor {
         return Optional.of(line);
     }
 
-    // x -x1       y -y1
-    //-------  =  -------
-    // x2-x1       y2-y1
+    // m = tan(direction)
     private Point validateCoordinates(double x, double y) { // TODO: 27/08/22 Improve
         if (x < 0)
             x = 0;

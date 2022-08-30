@@ -1,16 +1,17 @@
 package it.unicam.cs.pa.jlogo.instructions;
 
-import it.unicam.cs.pa.jlogo.LogoProgram;
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Instruction;
+
+import java.util.List;
 
 public class RepeatInstruction implements Instruction {
 
     private final int num;
-    private final LogoProgram instructions;
+    private final List<Instruction> instructions;
 
 
-    public RepeatInstruction(int num, LogoProgram instructions) {
+    public RepeatInstruction(int num, List<Instruction> instructions) {
         this.num = num;
         this.instructions = instructions;
     }
@@ -19,10 +20,7 @@ public class RepeatInstruction implements Instruction {
     @Override
     public void execute(Canvas canvas) {
         for (int i = num; i > 0; i--) {
-            while (instructions.hasNext()) {
-                instructions.next().execute(canvas);
-            }
-            instructions.reset();
+            instructions.forEach(instruction -> instruction.execute(canvas));
         }
     }
 }

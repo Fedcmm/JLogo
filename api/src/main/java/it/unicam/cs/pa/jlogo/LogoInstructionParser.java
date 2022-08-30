@@ -6,7 +6,9 @@ import it.unicam.cs.pa.jlogo.model.Instruction;
 import it.unicam.cs.pa.jlogo.model.InstructionParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class can parse the standard set of Logo instructions
@@ -29,7 +31,7 @@ public class LogoInstructionParser implements InstructionParser {
             case "SETFILLCOLOR" -> parseSetFillColor(instArgs);
             case "SETSCREENCOLOR" -> parseSetScreenColor(instArgs);
             case "SETPENSIZE" -> parseSetPenSize(instArgs);
-            case "REPEAT" -> parseRepeat(s.split("\n"));
+            case "REPEAT" -> parseRepeat(s.split(" ", 3));
 
             default -> throw new IOException("No parseable instruction found");
         };
@@ -113,11 +115,15 @@ public class LogoInstructionParser implements InstructionParser {
         }
     }
 
-    private RepeatInstruction parseRepeat(String[] args) {
-        int num = Integer.parseInt(args[0].split(" ")[1]);
-        for (int i = 1; i < args.length - 1; i++) {
+    private RepeatInstruction parseRepeat(String[] args) throws IOException {
+        int num = Integer.parseInt(args[1]);
+        String[] commands = args[2].substring(args[2].indexOf('[') + 1, args[2].lastIndexOf(']'))
+                .split(";");
+        List<Instruction> instructions = new ArrayList<>(commands.length);
+        for (String command : commands) {
+            instructions.add(parse(command));
         }
-        return null;
+        return new RepeatInstruction(num, instructions);
     }
 
     private Instruction throwException(String[] args) throws IOException {
