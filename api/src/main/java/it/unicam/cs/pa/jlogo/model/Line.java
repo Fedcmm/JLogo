@@ -2,6 +2,8 @@ package it.unicam.cs.pa.jlogo.model;
 
 import it.unicam.cs.pa.jlogo.Point;
 
+import java.awt.Color;
+
 /**
  * Represents a line in a Logo program
  */
@@ -18,12 +20,23 @@ public interface Line {
     Point getB();
 
     /**
-     * Checks whether this line and another intersect
-     *
-     * @param other the other line
-     * @return <code>true</code> if the two lines intersect, <code>false</code> otherwise
+     * @return the thickness of this line
      */
-    boolean intersectsWith(Line other);
+    int getSize();
 
-    boolean isConnectedTo(Line other); // TODO: 13/08/22 Name
+    /**
+     * @return the color of this line
+     */
+    Color getColor();
+
+    /**
+     * Checks whether this line connects to the given one, meaning that the two
+     * lines have one of their points in common
+     *
+     * @param other another line
+     * @return <code>true</code> if both lines share one point
+     *
+     * @throws NullPointerException if other is null
+     */
+    boolean isConnectedTo(Line other);
 }

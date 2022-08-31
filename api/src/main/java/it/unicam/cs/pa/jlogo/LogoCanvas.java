@@ -121,11 +121,12 @@ public class LogoCanvas implements Canvas {
         List<ClosedArea> connectedAreas = areas.stream()
                 .filter(Predicate.not(ClosedArea::isComplete))
                 .filter(area::isConnectedTo).toList();
+
+        areas.removeIf(area::isConnectedTo);
         for (ClosedArea a : connectedAreas) {
             area = area.join(a);
         }
 
-        areas.removeIf(area::isConnectedTo);
         return area;
     }
 }
