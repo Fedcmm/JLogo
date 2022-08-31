@@ -64,6 +64,11 @@ public interface Cursor {
      */
     void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener);
 
+    /**
+     * @return the distance from the <i>home</i> position of the canvas this cursor is in
+     */
+    int getDistanceFromHome();
+
     default void setLineColor(int r, int g, int b) {
         setLineColor(new Color(r, g, b));
     }

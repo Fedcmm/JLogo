@@ -22,6 +22,7 @@ public class LogoCursor implements Cursor {
     private Color areaColor;
 
     private OnClosedAreaDrawnListener areaListener;
+    private int maxDistance;
 
 
     public LogoCursor(Canvas canvas) {
@@ -33,6 +34,8 @@ public class LogoCursor implements Cursor {
         plotting = true;
         lineColor = Color.BLACK;
         areaColor = Color.WHITE;
+
+        maxDistance = calculateMaxDistance();
     }
 
 
@@ -41,6 +44,7 @@ public class LogoCursor implements Cursor {
         if (distance == 0)
             return Optional.empty();
 
+        if (distance > maxDistance) distance = maxDistance;
         Point initialPosition = position;
         position = calculateNextPosition(distance);
 
@@ -50,6 +54,7 @@ public class LogoCursor implements Cursor {
     @Override
     public void rotate(int degrees) {
         direction = (direction + degrees) % 360;
+        maxDistance = calculateMaxDistance();
     }
 
     @Override
@@ -80,24 +85,20 @@ public class LogoCursor implements Cursor {
         areaListener = listener;
     }
 
+    @Override
     public int getDistanceFromHome() {
-        Point home = canvas.getHome();
-
-        double dX = Math.abs(home.x() - position.x());
-        double dY = Math.abs(home.y() - position.y());
-
-        return (int) Math.round(Math.sqrt((dX*dX) + (dY*dY)));
+        return position.getDistanceFrom(canvas.getHome());
     }
 
     private Point calculateNextPosition(int distance) {
         double angle = Math.toRadians(direction);
 
-        int vDist = distance * (int) Math.round(Math.sin(angle));
-        int hDist = distance * (int) Math.round(Math.cos(angle));
+        double vDist = distance * Math.round(Math.sin(angle));
+        double hDist = distance * Math.round(Math.cos(angle));
 
         double x = hDist + position.x();
         double y = vDist + position.y();
-        return validateCoordinates(x, y);
+        return new Point(x, y);
     }
 
     private Optional<Line> draw(Point a, Point b) {
@@ -111,19 +112,34 @@ public class LogoCursor implements Cursor {
         return Optional.of(line);
     }
 
-    // m = tan(direction)
-    private Point validateCoordinates(double x, double y) { // TODO: 27/08/22 Improve
-        if (x < 0)
-            x = 0;
-        if (x > canvas.getWidth())
-            x = canvas.getWidth();
+    private int calculateMaxDistance() {
+        if (direction == 90)
+            return position.getDistanceFrom(new Point(position.x(), canvas.getHeight()));
+        if (direction == 270)
+            return position.getDistanceFrom(new Point(position.x(), 0));
 
-        if (y < 0)
-            y = 0;
-        if (y > canvas.getHeight())
-            y = canvas.getHeight();
+        double m = Math.tan(Math.toRadians(direction));
+        double intersVertSide;
 
-        return new Point(x, y);
+        if (direction > 90 && direction < 270) {
+            intersVertSide = -m * position.x() + position.y();
+            if (intersVertSide > 0 && intersVertSide < canvas.getHeight())
+                return position.getDistanceFrom(new Point(0, intersVertSide));
+        } else {
+            intersVertSide = m * canvas.getWidth() - m * position.x() + position.y();
+            if (intersVertSide > 0 && intersVertSide < canvas.getHeight())
+                return position.getDistanceFrom(new Point(canvas.getWidth(), intersVertSide));
+        }
+
+        if (intersVertSide > canvas.getHeight()) {
+            double intersAbove = (canvas.getHeight() - position.y() + m * position.x()) / m;
+            return position.getDistanceFrom(new Point(intersAbove, canvas.getHeight()));
+        }
+        if (intersVertSide < 0) {
+            double intersBelow = (-position.y() + m * position.x()) / m;
+            return position.getDistanceFrom(new Point(intersBelow, 0));
+        }
+        return 0;
     }
 
     private void callListener() {

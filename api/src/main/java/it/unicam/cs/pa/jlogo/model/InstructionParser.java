@@ -3,7 +3,7 @@ package it.unicam.cs.pa.jlogo.model;
 import java.io.IOException;
 
 /**
- * Classes implementing this interface can parse a string into an {@link Instruction}
+ * Classes implementing this interface can parse a string into an {@link Instruction} object
  */
 public interface InstructionParser {
 
