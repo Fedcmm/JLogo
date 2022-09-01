@@ -48,6 +48,11 @@ public interface Canvas {
 
     Cursor getCursor();
 
+    /**
+     * Moves the cursor this canvas contains
+     *
+     * @param distance the distance the cursor should travel
+     */
     void moveCursor(int distance);
 
     /**
@@ -71,6 +76,16 @@ public interface Canvas {
         return new Point(getWidth() / 2.0, getHeight() / 2.0);
     }
 
+    /**
+     * Changes the background color of this canvas using the specified red, green
+     * and blue values in the range (0 - 255)
+     *
+     * @param r the red component
+     * @param g the green component
+     * @param b the blue component
+     *
+     * @throws IllegalArgumentException if r, g or b are outside of the range 0 to 255, inclusive
+     */
     default void setBackColor(int r, int g, int b) {
         setBackColor(new Color(r, g, b));
     }

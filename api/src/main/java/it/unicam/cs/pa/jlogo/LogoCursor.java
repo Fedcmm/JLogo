@@ -47,6 +47,7 @@ public class LogoCursor implements Cursor {
         if (distance > maxDistance) distance = maxDistance;
         Point initialPosition = position;
         position = calculateNextPosition(distance);
+        maxDistance = calculateMaxDistance();
 
         return plotting ? draw(initialPosition, position) : Optional.empty();
     }
@@ -59,6 +60,9 @@ public class LogoCursor implements Cursor {
 
     @Override
     public void setPenSize(int size) {
+        if (size < 1)
+            throw new IllegalArgumentException("Pen size can't be less than 1");
+
         penSize = size;
     }
 
@@ -143,7 +147,7 @@ public class LogoCursor implements Cursor {
     }
 
     private void callListener() {
-        if (areaListener != null) {
+        if (areaListener != null && !currentLines.isEmpty()) {
             areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
             currentLines.clear();
         }

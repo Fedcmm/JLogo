@@ -40,7 +40,7 @@ public class CircularList<E> implements Collection<E> {
 
 
     public boolean isComplete() {
-        return last.next == first;
+        return last != null && last.next == first;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class CircularList<E> implements Collection<E> {
         else
             last.next = newNode;
         last = newNode;
-        if (connectPredicate.test(last.elem, first.elem))
+        if (size > 2 && connectPredicate.test(last.elem, first.elem))
             last.next = first;
         size++; modCount++;
     }

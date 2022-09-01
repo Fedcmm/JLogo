@@ -28,6 +28,12 @@ public class LogoCanvas implements Canvas {
     private OnClosedAreaDrawnListener areaListener;
 
 
+    /**
+     * Creates a new canvas with the specified dimensions
+     *
+     * @param width the width of the canvas
+     * @param height the height of the canvas
+     */
     public LogoCanvas(int width, int height) {
         this.width = width;
         this.height = height;

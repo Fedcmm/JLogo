@@ -69,10 +69,30 @@ public interface Cursor {
      */
     int getDistanceFromHome();
 
+    /**
+     * Changes the color of the lines drawn by the cursor using the specified red, green
+     * and blue values in the range (0 - 255)
+     *
+     * @param r the red component
+     * @param g the green component
+     * @param b the blue component
+     *
+     * @throws IllegalArgumentException if r, g or b are outside of the range 0 to 255, inclusive
+     */
     default void setLineColor(int r, int g, int b) {
         setLineColor(new Color(r, g, b));
     }
 
+    /**
+     * Changes the color of the closed areas created by the cursor using the specified red,
+     * green and blue values in the range (0 - 255)
+     *
+     * @param r the red component
+     * @param g the green component
+     * @param b the blue component
+     *
+     * @throws IllegalArgumentException if r, g or b are outside of the range 0 to 255, inclusive
+     */
     default void setAreaColor(int r, int g, int b) {
         setAreaColor(new Color(r, g, b));
     }
