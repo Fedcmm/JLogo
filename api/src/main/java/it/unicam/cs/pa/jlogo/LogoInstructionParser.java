@@ -37,6 +37,7 @@ public class LogoInstructionParser implements InstructionParser {
         };
     }
 
+
     private Instruction parseForward(String[] args) throws IOException {
         try {
             int dist = Integer.parseInt(args[1]);
@@ -115,21 +116,45 @@ public class LogoInstructionParser implements InstructionParser {
         }
     }
 
+
     private RepeatInstruction parseRepeat(String[] args) throws IOException {
         int num = Integer.parseInt(args[1]);
-        String[] commands = args[2].substring(args[2].indexOf('[') + 1, args[2].lastIndexOf(']'))
-                .split(";");
-        List<Instruction> instructions = new ArrayList<>(commands.length);
-        for (String command : commands) {
-            instructions.add(parse(command));
+        List<Instruction> instructions = new ArrayList<>();
+
+        try {
+            String commands = args[2].substring(args[2].indexOf('[') + 1, args[2].lastIndexOf(']')).trim();
+            instructions = parseCommands(commands);
+        } catch (Exception e) {
+            throwException(args);
         }
+
         return new RepeatInstruction(num, instructions);
     }
+
+    /**
+     * Parses the list of commands of a {@link RepeatInstruction}
+     */
+    private List<Instruction> parseCommands(String commands) throws IOException {
+        List<Instruction> instructions = new ArrayList<>();
+
+        while (!commands.isEmpty()) {
+            if (commands.startsWith("REPEAT")) {
+                instructions.add(parse(commands.substring(0, commands.indexOf(']') + 1)));
+                commands = commands.substring(commands.indexOf(']') + 2);
+                continue;
+            }
+            String[] spilt = commands.split(";", 2);
+            instructions.add(parse(spilt[0].trim()));
+            commands = spilt[1].trim();
+        }
+        return instructions;
+    }
+
 
     private Instruction throwException(String[] args) throws IOException {
         throw new IOException(
                 "Wrong syntax for instruction \""
-                        .concat(Arrays.stream(args).reduce(String::concat).orElse(""))
+                        .concat(Arrays.stream(args).reduce((s, s2) -> s.concat(" ").concat(s2)).orElse(""))
                         .concat("\"")
         );
     }

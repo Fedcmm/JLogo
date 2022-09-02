@@ -17,13 +17,13 @@ import java.util.function.BiPredicate;
  */
 public class CircularList<E> implements Collection<E> {
 
-    private int size = 0;
-    private int modCount = 0;
-
     private final BiPredicate<E, E> connectPredicate;
 
     private Node<E> first;
     private Node<E> last;
+
+    private int size = 0;
+    private int modCount = 0;
 
 
     /**
@@ -39,6 +39,10 @@ public class CircularList<E> implements Collection<E> {
     }
 
 
+    /**
+     * @return <code>true</code> if the sequence of items in this list circles back to
+     * the first one, <code>false</code> otherwise
+     */
     public boolean isComplete() {
         return last != null && last.next == first;
     }

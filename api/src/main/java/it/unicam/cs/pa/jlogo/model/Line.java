@@ -34,7 +34,7 @@ public interface Line {
      * lines have one of their points in common
      *
      * @param other another line
-     * @return <code>true</code> if both lines share one point
+     * @return <code>true</code> if the lines share exactly one point
      *
      * @throws NullPointerException if other is null
      */
