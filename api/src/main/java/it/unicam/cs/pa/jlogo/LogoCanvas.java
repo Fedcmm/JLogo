@@ -8,19 +8,23 @@ import it.unicam.cs.pa.jlogo.model.OnClosedAreaDrawnListener;
 import it.unicam.cs.pa.jlogo.model.OnLineDrawnListener;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * Default implementation of {@link Canvas}
+ */
 public class LogoCanvas implements Canvas {
 
     private final int width;
     private final int height;
     private final Cursor cursor;
 
-    private final List<Line> lines = new ArrayList<>();
-    private final List<ClosedArea> areas = new ArrayList<>();
+    private final Set<Line> lines = new HashSet<>();
+    private final Set<ClosedArea> areas = new HashSet<>();
 
     private Color backColor;
 
@@ -92,8 +96,10 @@ public class LogoCanvas implements Canvas {
             return;
 
         Line line = result.get();
-        lines.add(line);
-        if (lineListener != null) lineListener.lineDrawn(line);
+        if (areas.stream().flatMap(area -> area.getLines().stream()).noneMatch(line::equals)) {
+            lines.add(line);
+            if (lineListener != null) lineListener.lineDrawn(line);
+        }
     }
 
     @Override
@@ -106,11 +112,13 @@ public class LogoCanvas implements Canvas {
         areaListener = listener;
     }
 
+    /**
+     * Handles closed areas received from the cursor
+     */
     private void receiveClosedArea(ClosedArea area) {
         areas.add(joinAreas(area));
 
         if (area.isComplete()) {
-            // TODO: 27/08/22 Check lines in existing complete areas
             area.getLines().forEach(lines::remove);
             if (areaListener != null) areaListener.closedAreaDrawn(area);
         }

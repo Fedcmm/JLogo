@@ -193,13 +193,13 @@ public class CircularList<E> implements Collection<E> {
 
         @Override
         public boolean hasNext() {
-            return current != null && current.next != null;
+            return current != null;
         }
 
         @Override
         public E next() {
             if (modCount != expectedModCount)
-                throw new ConcurrentModificationException();
+                throw new ConcurrentModificationException("The list can't be modified while iteration is in progress");
             if (!hasNext())
                 throw new NoSuchElementException("The iterator has no more elements");
 

@@ -17,6 +17,9 @@ public interface ClosedArea {
      */
     void addLine(Line line);
 
+    /**
+     * @return the fill color of this area
+     */
     Color getFillColor();
 
     /**
@@ -38,7 +41,9 @@ public interface ClosedArea {
      * will be the same as the caller of this method
      *
      * @param other the area to join to this one
-     * @return the new area
+     * @return a new area that contains the lines of both areas
+     *
+     * @throws IllegalArgumentException if the two areas are not connected
      */
     ClosedArea join(ClosedArea other);
 
@@ -51,9 +56,9 @@ public interface ClosedArea {
      */
     default boolean isConnectedTo(ClosedArea other) {
         return !isComplete() && !other.isComplete() &&
-                (getFirstLine().isConnectedTo(other.getFirstLine()) ||
-                getFirstLine().isConnectedTo(other.getLastLine()) ||
-                getLastLine().isConnectedTo(other.getFirstLine()) ||
-                getLastLine().isConnectedTo(other.getLastLine()));
+                (this.getFirstLine().isConnectedTo(other.getFirstLine()) ||
+                this.getFirstLine().isConnectedTo(other.getLastLine()) ||
+                this.getLastLine().isConnectedTo(other.getFirstLine()) ||
+                this.getLastLine().isConnectedTo(other.getLastLine()));
     }
 }

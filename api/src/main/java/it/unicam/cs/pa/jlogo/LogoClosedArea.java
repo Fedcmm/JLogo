@@ -51,7 +51,11 @@ public class LogoClosedArea implements ClosedArea {
 
     @Override
     public ClosedArea join(ClosedArea other) {
-        other.getLines().forEach(this::addLine);
-        return this;
+        if (!this.isConnectedTo(other))
+            throw new IllegalArgumentException("Can't join two non-connected areas");
+
+        ClosedArea newArea = new LogoClosedArea(lines, fillColor);
+        other.getLines().forEach(newArea::addLine);
+        return newArea;
     }
 }

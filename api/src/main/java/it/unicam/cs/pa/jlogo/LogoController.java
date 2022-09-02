@@ -6,6 +6,7 @@ import it.unicam.cs.pa.jlogo.model.ProgramReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Controls the execution of a Logo program
@@ -19,8 +20,8 @@ public class LogoController {
 
 
     public LogoController(Canvas canvas, ProgramReader reader) {
-        this.canvas = canvas;
-        this.reader = reader;
+        this.canvas = Objects.requireNonNull(canvas);
+        this.reader = Objects.requireNonNull(reader);
     }
 
 
@@ -30,5 +31,9 @@ public class LogoController {
 
     public void executeNext() {
         program.next().execute(canvas);
+    }
+
+    public void reset() {
+        program.reset();
     }
 }
