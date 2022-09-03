@@ -19,21 +19,49 @@ public class LogoController {
     private Program program;
 
 
+    /**
+     * Creates a new controller with the given canvas and reader
+     *
+     * @param canvas the canvas where the execution of the program will take place
+     * @param reader the reader used to load the programs
+     */
     public LogoController(Canvas canvas, ProgramReader reader) {
         this.canvas = Objects.requireNonNull(canvas);
         this.reader = Objects.requireNonNull(reader);
     }
 
 
-    public void openProgram(File file) throws IOException {
+    /**
+     * Loads a program from the given file
+     *
+     * @param file the file with the program instructions
+     *
+     * @throws IOException if there are problems reading the file or the instructions
+     * syntax is wrong
+     */
+    public void loadProgram(File file) throws IOException {
         program = reader.read(file);
+        canvas.clear();
     }
 
-    public void executeNext() {
+    /**
+     * Executes the next instruction in the currently loaded program
+     *
+     * @return <code>false</code> if the program is finished
+     */
+    public boolean executeNext() {
+        if (!program.hasNext())
+            return false;
+
         program.next().execute(canvas);
+        return true;
     }
 
+    /**
+     * Resets the execution of the current program and clears the canvas
+     */
     public void reset() {
+        canvas.clear();
         program.reset();
     }
 }

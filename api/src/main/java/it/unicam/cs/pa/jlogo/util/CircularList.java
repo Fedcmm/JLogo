@@ -11,7 +11,7 @@ import java.util.function.BiPredicate;
 /**
  * A simple linked list where all elements are logically connected by the given {@link BiPredicate}.
  * The list allows its elements to connect back to the first one, once this happens no more elements
- * can to be added
+ * can be added
  *
  * @param <E> the type of the elements in this list
  */

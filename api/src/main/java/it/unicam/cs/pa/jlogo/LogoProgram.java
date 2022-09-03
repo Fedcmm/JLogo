@@ -4,6 +4,7 @@ import it.unicam.cs.pa.jlogo.model.Instruction;
 import it.unicam.cs.pa.jlogo.model.Program;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -17,10 +18,29 @@ public class LogoProgram implements Program {
     private int currentIndex = 0;
 
 
+    /**
+     * Creates a program with the given list of instructions
+     *
+     * @param instructions the instructions of the program
+     *
+     * @throws IllegalArgumentException if instructions is empty
+     * @throws NullPointerException if instructions is null
+     */
     public LogoProgram(List<Instruction> instructions) {
-        this.instructions = Objects.requireNonNull(instructions);
+        if (Objects.requireNonNull(instructions).isEmpty())
+            throw new IllegalArgumentException("Can't create a program with no instructions");
+
+        this.instructions = instructions;
     }
 
+    /**
+     * Creates a program with the given instructions
+     *
+     * @param instructions the instructions of the program
+     *
+     * @throws IllegalArgumentException if instructions is empty
+     * @throws NullPointerException if instructions is null
+     */
     public LogoProgram(Instruction... instructions) {
         this(List.of(instructions));
     }
@@ -28,6 +48,9 @@ public class LogoProgram implements Program {
 
     @Override
     public Instruction next() {
+        if (currentIndex >= instructions.size())
+            throw new NoSuchElementException("The program has no more instructions");
+
         return instructions.get(currentIndex++);
     }
 

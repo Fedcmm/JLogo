@@ -29,14 +29,19 @@ class LogoCursorTest {
     @Test
     void listenerCallsTest() {
         cursor.setOnClosedAreaDrawnListener(area -> assertTrue(area.isComplete()));
-        drawCompleteShape();
+        drawCompleteArea();
 
         cursor.setOnClosedAreaDrawnListener(Assertions::assertNotNull);
         cursor.move(50);
         cursor.setPlotting(false);
     }
 
-    private void drawCompleteShape() {
+    @Test
+    void complexMovementsTest() {
+        // TODO: 03/09/22 Write
+    }
+
+    private void drawCompleteArea() {
         cursor.move(50);
         cursor.rotate(90);
         cursor.move(50);

@@ -1,14 +1,16 @@
 package it.unicam.cs.pa.jlogo.model;
 
+import java.util.NoSuchElementException;
+
 /**
  * Represents a Logo program that can return its instructions one by one
  */
 public interface Program {
 
     /**
-     * Returns the next instruction in this program
-     *
      * @return the next instruction in this program
+     *
+     * @throws NoSuchElementException if this program has no more instructions
      */
     Instruction next();
 
