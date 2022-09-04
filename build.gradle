@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation "org.openjfx:javafx-base:18.0.2:${getJavaFXPlatform()}"
     implementation "org.openjfx:javafx-controls:18.0.2:${getJavaFXPlatform()}"
+    implementation "org.openjfx:javafx-fxml:18.0.2:${getJavaFXPlatform()}"
     implementation "org.openjfx:javafx-graphics:18.0.2:${getJavaFXPlatform()}"
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
