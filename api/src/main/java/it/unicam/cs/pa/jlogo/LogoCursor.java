@@ -12,7 +12,6 @@ import java.util.Optional;
 public class LogoCursor implements Cursor {
 
     private final Canvas canvas;
-    private final CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
 
     private Point position;
     private int direction;
@@ -23,6 +22,7 @@ public class LogoCursor implements Cursor {
 
     private OnClosedAreaDrawnListener areaListener;
     private int maxDistance;
+    private CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
 
 
     public LogoCursor(Canvas canvas) {
@@ -149,7 +149,7 @@ public class LogoCursor implements Cursor {
     private void callListener() {
         if (areaListener != null && !currentLines.isEmpty()) {
             areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
-            currentLines.clear();
+            currentLines = new CircularList<>(Line::isConnectedTo);
         }
     }
 }

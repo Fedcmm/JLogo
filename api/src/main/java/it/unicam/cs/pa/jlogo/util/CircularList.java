@@ -138,6 +138,7 @@ public class CircularList<E> implements Collection<E> {
     @Override
     public void clear() {
         first = last = null;
+        size = 0;
         modCount++;
     }
 
