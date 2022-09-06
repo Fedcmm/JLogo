@@ -7,12 +7,13 @@ import it.unicam.cs.pa.jlogo.LogoProgramReader;
 import it.unicam.cs.pa.jlogo.Point;
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.ClosedArea;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
@@ -23,6 +24,12 @@ public class LogoMainController {
 
     @FXML
     private Pane canvasPane;
+    @FXML
+    private Button loadButton;
+    @FXML
+    private Button nextButton;
+    @FXML
+    private Button playPauseButton;
 
     private LogoController controller;
 
@@ -36,6 +43,28 @@ public class LogoMainController {
         controller = new LogoController(canvas, new LogoProgramReader(new LogoInstructionParser()));
     }
 
+    @FXML
+    private void onLoadClicked(Event event) {
+
+    }
+
+    @FXML
+    private void onNextClicked(Event event) {
+        if (!controller.executeNext())
+            nextButton.setDisable(true);
+    }
+
+    @FXML
+    private void onPlayPauseClicked(Event event) {
+        ImageView imageView = new ImageView("/icons/icon_pause.png");
+        imageView.setFitHeight(30);
+        imageView.setFitWidth(30);
+        imageView.setPickOnBounds(true);
+        imageView.setPreserveRatio(true);
+        playPauseButton.setGraphic(imageView);
+    }
+
+
     private void drawLine(it.unicam.cs.pa.jlogo.model.Line line) {
         canvasPane.getChildren().add(toFxLine(line));
     }
@@ -43,6 +72,7 @@ public class LogoMainController {
     private void drawClosedArea(ClosedArea area) {
         canvasPane.getChildren().add(toFxPath(area));
     }
+
 
     /**
      * Converts a y coordinate value into one compatible with the JavaFx system (the 0

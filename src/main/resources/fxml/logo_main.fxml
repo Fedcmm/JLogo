@@ -1,12 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.8203517587939698" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.LogoMainController">
-    <Pane fx:id="canvasPane" prefHeight="200.0" prefWidth="200.0"/>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.LogoMainController">
+
+    <Pane fx:id="canvasPane" prefHeight="200.0" prefWidth="200.0" />
+
     <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
-        <Button mnemonicParsing="false" text="Button" />
+
+        <Button fx:id="nextButton" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
+            <graphic>
+                <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../icons/icon_forward.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+
+        <Button fx:id="loadButton" mnemonicParsing="false" text="Load" onAction="#onLoadClicked">
+            <graphic>
+                <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../icons/icon_open.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+
+        <Button fx:id="playPauseButton" mnemonicParsing="false" text="PlayPause" onAction="#onPlayPauseClicked">
+            <graphic>
+                <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@../icons/icon_play.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+
     </ToolBar>
 </SplitPane>
+
+<!--TODO: Icons8 mention-->
+<!--
+Icons by <a target="_blank" href="https://icons8.com">Icons8</a>
+-->

@@ -20,7 +20,7 @@ public class LogoController {
 
 
     /**
-     * Creates a new controller with the given canvas and reader
+     * Creates a new empty controller with the given canvas and reader
      *
      * @param canvas the canvas where the execution of the program will take place
      * @param reader the reader used to load the programs
