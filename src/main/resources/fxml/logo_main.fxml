@@ -5,9 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <SplitPane dividerPositions="0.8203517587939698" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.LogoMainController">
-    <Pane prefHeight="200.0" prefWidth="200.0">
-        <Group fx:id="canvasGroup" />
-    </Pane>
+    <Pane fx:id="canvasPane" prefHeight="200.0" prefWidth="200.0"/>
     <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
         <Button mnemonicParsing="false" text="Button" />
     </ToolBar>

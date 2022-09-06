@@ -1,7 +1,7 @@
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
-
 plugins {
     id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 group 'it.unicam.cs.pa'
@@ -12,10 +12,12 @@ repositories {
 }
 
 dependencies {
-    implementation "org.openjfx:javafx-base:18.0.2:${getJavaFXPlatform()}"
+    implementation project(":api")
+
+    /*implementation "org.openjfx:javafx-base:18.0.2:${getJavaFXPlatform()}"
     implementation "org.openjfx:javafx-controls:18.0.2:${getJavaFXPlatform()}"
     implementation "org.openjfx:javafx-fxml:18.0.2:${getJavaFXPlatform()}"
-    implementation "org.openjfx:javafx-graphics:18.0.2:${getJavaFXPlatform()}"
+    implementation "org.openjfx:javafx-graphics:18.0.2:${getJavaFXPlatform()}"*/
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
@@ -25,13 +27,11 @@ test {
     useJUnitPlatform()
 }
 
-private static String getJavaFXPlatform() {
-    def currentOS = DefaultNativePlatform.currentOperatingSystem
-    if (currentOS.isWindows())
-        return 'win'
-    else if (currentOS.isLinux())
-        return 'linux'
-    else if (currentOS.isMacOsX())
-        return 'mac'
-    return null
+application {
+    mainClass = 'it.unicam.cs.pa.jlogo.app.App'
+}
+
+javafx {
+    version = '17.0.2'
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics']
 }

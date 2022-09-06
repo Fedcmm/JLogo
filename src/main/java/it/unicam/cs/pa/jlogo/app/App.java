@@ -18,6 +18,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/logo_main.fxml")));
+        primaryStage.setTitle("JLogo");
         primaryStage.setScene(new Scene(root, LogoMainController.DEFAULT_WIDTH, LogoMainController.DEFAULT_HEIGHT));
         primaryStage.show();
     }
