@@ -6,9 +6,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
+<?import javafx.scene.canvas.Canvas?>
+
 <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.LogoMainController">
 
-    <Pane fx:id="canvasPane" prefHeight="200.0" prefWidth="200.0" />
+    <Pane fx:id="canvasPane">
+        <Canvas fx:id="fxCanvas" />
+    </Pane>
 
     <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
 

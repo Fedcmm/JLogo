@@ -30,7 +30,7 @@ public class LogoCursor implements Cursor {
 
         position = canvas.getHome();
         direction = 0;
-        penSize = 5;
+        penSize = 1;
         plotting = true;
         lineColor = Color.BLACK;
         areaColor = Color.WHITE;
@@ -68,9 +68,8 @@ public class LogoCursor implements Cursor {
 
     @Override
     public void setPlotting(boolean plotting) {
-        if (this.plotting && !plotting) {
+        if (this.plotting && !plotting)
             callListener();
-        }
         this.plotting = plotting;
     }
 

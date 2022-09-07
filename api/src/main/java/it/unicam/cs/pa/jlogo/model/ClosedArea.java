@@ -27,8 +27,14 @@ public interface ClosedArea {
      */
     boolean isComplete();
 
+    /**
+     * @return the first line added to this area
+     */
     Line getFirstLine();
 
+    /**
+     * @return the last line added to this area
+     */
     Line getLastLine();
 
     /**

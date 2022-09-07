@@ -4,18 +4,20 @@ import it.unicam.cs.pa.jlogo.LogoCanvas;
 import it.unicam.cs.pa.jlogo.LogoController;
 import it.unicam.cs.pa.jlogo.LogoInstructionParser;
 import it.unicam.cs.pa.jlogo.LogoProgramReader;
-import it.unicam.cs.pa.jlogo.Point;
-import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.ClosedArea;
+import it.unicam.cs.pa.jlogo.model.Line;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
+import javafx.stage.FileChooser;
+
+import java.io.File;
+import java.io.IOException;
 
 public class LogoMainController {
 
@@ -25,18 +27,37 @@ public class LogoMainController {
     @FXML
     private Pane canvasPane;
     @FXML
+    private Canvas fxCanvas;
+    @FXML
     private Button loadButton;
     @FXML
     private Button nextButton;
     @FXML
     private Button playPauseButton;
 
+    private GraphicsContext gc;
     private LogoController controller;
 
 
     @FXML
     public void initialize() {
-        Canvas canvas = new LogoCanvas(canvasPane.widthProperty().intValue(), canvasPane.heightProperty().intValue());
+        fxCanvas.widthProperty().bind(canvasPane.widthProperty());
+        fxCanvas.heightProperty().bind(canvasPane.heightProperty());
+
+        fxCanvas.widthProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (fxCanvas.getHeight() != 0)
+                initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
+        });
+        fxCanvas.heightProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (fxCanvas.getWidth() != 0)
+                initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
+        });
+
+        gc = fxCanvas.getGraphicsContext2D();
+    }
+
+    private void initializeLogoController(int width, int height) {
+        LogoCanvas canvas = new LogoCanvas(width, height);
         canvas.setOnLineDrawnListener(this::drawLine);
         canvas.setOnClosedAreaDrawnListener(this::drawClosedArea);
 
@@ -45,7 +66,19 @@ public class LogoMainController {
 
     @FXML
     private void onLoadClicked(Event event) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Logo program file");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
 
+        File file = chooser.showOpenDialog(canvasPane.getScene().getWindow());
+        if (file != null) {
+            try {
+                controller.loadProgram(file);
+            } catch (IOException e) {
+                // TODO: 06/09/22 Show message
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     @FXML
@@ -65,52 +98,29 @@ public class LogoMainController {
     }
 
 
-    private void drawLine(it.unicam.cs.pa.jlogo.model.Line line) {
-        canvasPane.getChildren().add(toFxLine(line));
+    private void drawLine(Line line) {
+        gc.setStroke(toFxColor(line.getColor()));
+        gc.setLineWidth(line.getSize());
+        gc.strokeLine(line.getA().x(), convertYCoordinate(line.getA().y()),
+                line.getB().x(), convertYCoordinate(line.getB().y()));
     }
 
     private void drawClosedArea(ClosedArea area) {
-        canvasPane.getChildren().add(toFxPath(area));
+        drawLine(area.getLastLine());
+
+        double[] xValues = area.getLines().stream().mapToDouble(line -> line.getA().x()).toArray();
+        double[] yValues = area.getLines().stream().mapToDouble(line -> convertYCoordinate(line.getA().y())).toArray();
+        gc.setFill(toFxColor(area.getFillColor()));
+        gc.fillPolygon(xValues, yValues, xValues.length);
     }
 
 
     /**
-     * Converts a y coordinate value into one compatible with the JavaFx system (the 0
+     * Converts a y coordinate value into one compatible with the JavaFx canvas (the 0
      * is at the top)
      */
     private double convertYCoordinate(double y) {
         return canvasPane.getHeight() - y;
-    }
-
-    /**
-     * Converts a line from the Logo model into a JavaFx line
-     *
-     * @param line a {@link it.unicam.cs.pa.jlogo.model.Line}
-     * @return a {@link Line} instance with the same attributes as the parameter
-     */
-    public Line toFxLine(it.unicam.cs.pa.jlogo.model.Line line) {
-        Line fxLine = new Line(line.getA().x(), convertYCoordinate(line.getA().y()),
-                line.getB().x(), convertYCoordinate(line.getB().y()));
-        fxLine.setStrokeWidth(line.getSize());
-        fxLine.setStroke(toFxColor(line.getColor()));
-        return fxLine;
-    }
-
-    /**
-     * Converts a closed area from the Logo model into a {@link Path}
-     *
-     * @param area a {@link ClosedArea}
-     * @return a {@link Path} instance with the same attributes as the parameter
-     */
-    public Path toFxPath(ClosedArea area) {
-        Path path = new Path();
-        area.getLines().stream()
-                .map(line -> new MoveTo(line.getA().x(), convertYCoordinate(line.getA().y())))
-                .forEach(moveTo -> path.getElements().add(moveTo));
-        Point firstPoint = area.getLines().get(0).getA();
-        path.getElements().add(new MoveTo(firstPoint.x(), convertYCoordinate(firstPoint.y())));
-        path.setFill(toFxColor(area.getFillColor()));
-        return path;
     }
 
     /**
@@ -119,7 +129,7 @@ public class LogoMainController {
      * @param color a {@link java.awt.Color}
      * @return a {@link Color} instance with the same rgb components as the parameter
      */
-    public Color toFxColor(java.awt.Color color) {
-        return Color.color(color.getRed(), color.getGreen(), color.getBlue());
+    private Color toFxColor(java.awt.Color color) {
+        return Color.rgb(color.getRed(), color.getGreen(), color.getBlue());
     }
 }

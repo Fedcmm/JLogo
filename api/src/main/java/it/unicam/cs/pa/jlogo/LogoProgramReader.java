@@ -34,7 +34,7 @@ public class LogoProgramReader implements ProgramReader {
             try {
                 instructions[i] = parser.parse(instArray[i]);
             } catch (IOException e) {
-                throw new IOException("Syntax error at line " + (i + 1), e);
+                throw new IOException("Syntax error at line " + (i + 1) + ": " + e.getMessage(), e);
             }
         }
         return new LogoProgram(instructions);
