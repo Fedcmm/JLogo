@@ -8,39 +8,55 @@
 
 <?import javafx.scene.canvas.Canvas?>
 
+<?import javafx.scene.text.Text?>
+
+
 <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.LogoMainController">
 
     <Pane fx:id="canvasPane">
         <Canvas fx:id="fxCanvas" />
     </Pane>
 
-    <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
+    <BorderPane maxHeight="65.0" minHeight="65.0">
 
-        <Button fx:id="nextButton" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
-            <graphic>
-                <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../icons/icon_forward.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
+        <center>
+            <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0">
 
-        <Button fx:id="loadButton" mnemonicParsing="false" text="Load" onAction="#onLoadClicked">
-            <graphic>
-                <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../icons/icon_open.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
+                <Button fx:id="nextButton" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/icon_forward.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
 
-        <Button fx:id="playPauseButton" mnemonicParsing="false" text="PlayPause" onAction="#onPlayPauseClicked">
-            <graphic>
-                <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../icons/icon_play.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
+                <Button fx:id="loadButton" mnemonicParsing="false" text="Load" onAction="#onLoadClicked">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/icon_open.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
 
-    </ToolBar>
+                <Button fx:id="playPauseButton" mnemonicParsing="false" text="PlayPause" onAction="#onPlayPauseClicked">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/icon_play.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Pane HBox.hgrow="ALWAYS"/>
+
+            </ToolBar>
+        </center>
+
+        <bottom>
+            <Text fx:id="infoText"/>
+        </bottom>
+
+    </BorderPane>
+
 </SplitPane>
 
 <!--TODO: Icons8 mention-->

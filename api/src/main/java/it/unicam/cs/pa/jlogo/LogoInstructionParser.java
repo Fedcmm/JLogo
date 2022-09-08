@@ -33,7 +33,7 @@ public class LogoInstructionParser implements InstructionParser {
             case "SETPENSIZE" -> parseSetPenSize(instArgs);
             case "REPEAT" -> parseRepeat(s.split(" ", 3));
 
-            default -> throw new IOException("No parseable instruction found");
+            default -> throw new IOException("\"" + instArgs[0] + "\" is not a valid instruction");
         };
     }
 

@@ -1,9 +1,6 @@
 package it.unicam.cs.pa.jlogo.app;
 
-import it.unicam.cs.pa.jlogo.LogoCanvas;
 import it.unicam.cs.pa.jlogo.LogoController;
-import it.unicam.cs.pa.jlogo.LogoInstructionParser;
-import it.unicam.cs.pa.jlogo.LogoProgramReader;
 import it.unicam.cs.pa.jlogo.model.ClosedArea;
 import it.unicam.cs.pa.jlogo.model.Line;
 import javafx.event.Event;
@@ -12,8 +9,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -28,6 +28,8 @@ public class LogoMainController {
     private Pane canvasPane;
     @FXML
     private Canvas fxCanvas;
+    @FXML
+    private Text infoText;
     @FXML
     private Button loadButton;
     @FXML
@@ -44,11 +46,11 @@ public class LogoMainController {
         fxCanvas.widthProperty().bind(canvasPane.widthProperty());
         fxCanvas.heightProperty().bind(canvasPane.heightProperty());
 
-        fxCanvas.widthProperty().addListener((observableValue, oldValue, newValue) -> {
+        fxCanvas.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (fxCanvas.getHeight() != 0)
                 initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
         });
-        fxCanvas.heightProperty().addListener((observableValue, oldValue, newValue) -> {
+        fxCanvas.heightProperty().addListener((observable, oldValue, newValue) -> {
             if (fxCanvas.getWidth() != 0)
                 initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
         });
@@ -57,11 +59,14 @@ public class LogoMainController {
     }
 
     private void initializeLogoController(int width, int height) {
-        LogoCanvas canvas = new LogoCanvas(width, height);
+        ObservableLogoCanvas canvas = new ObservableLogoCanvas(width, height);
         canvas.setOnLineDrawnListener(this::drawLine);
         canvas.setOnClosedAreaDrawnListener(this::drawClosedArea);
 
-        controller = new LogoController(canvas, new LogoProgramReader(new LogoInstructionParser()));
+        canvas.backColorProperty().addListener(((observable, oldValue, newValue) ->
+                canvasPane.setBackground(new Background(new BackgroundFill(toFxColor(newValue), null, null)))));
+
+        controller = new LogoController(canvas);
     }
 
     @FXML
@@ -69,14 +74,15 @@ public class LogoMainController {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Logo program file");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 
         File file = chooser.showOpenDialog(canvasPane.getScene().getWindow());
         if (file != null) {
             try {
                 controller.loadProgram(file);
             } catch (IOException e) {
-                // TODO: 06/09/22 Show message
-                System.out.println(e.getMessage());
+                infoText.setFill(Color.RED);
+                infoText.setText(e.getMessage());
             }
         }
     }

@@ -35,7 +35,7 @@ public class LogoCanvas implements Canvas {
     /**
      * Creates a new canvas with the specified dimensions
      *
-     * @param width the width of the canvas
+     * @param width  the width of the canvas
      * @param height the height of the canvas
      */
     public LogoCanvas(int width, int height) {

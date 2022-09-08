@@ -96,8 +96,8 @@ public class LogoCursor implements Cursor {
     private Point calculateNextPosition(int distance) {
         double angle = Math.toRadians(direction);
 
-        double vDist = distance * Math.round(Math.sin(angle));
-        double hDist = distance * Math.round(Math.cos(angle));
+        double vDist = distance * Math.sin(angle);
+        double hDist = distance * Math.cos(angle);
 
         double x = hDist + position.x();
         double y = vDist + position.y();

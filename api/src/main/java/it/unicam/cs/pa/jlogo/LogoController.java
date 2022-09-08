@@ -20,6 +20,15 @@ public class LogoController {
 
 
     /**
+     * Creates a new empty controller with the given canvas and default {@link LogoProgramReader}
+     *
+     * @param canvas the canvas where the execution of the program will take place
+     */
+    public LogoController(Canvas canvas) {
+        this(canvas, new LogoProgramReader(new LogoInstructionParser()));
+    }
+
+    /**
      * Creates a new empty controller with the given canvas and reader
      *
      * @param canvas the canvas where the execution of the program will take place
