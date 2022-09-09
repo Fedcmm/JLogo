@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -18,6 +20,9 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class LogoMainController {
 
@@ -29,16 +34,22 @@ public class LogoMainController {
     @FXML
     private Canvas fxCanvas;
     @FXML
-    private Text infoText;
-    @FXML
-    private Button loadButton;
-    @FXML
     private Button nextButton;
     @FXML
     private Button playPauseButton;
+    @FXML
+    private Slider intervalSlider;
+    @FXML
+    private Text sliderText;
+    @FXML
+    private Text infoText;
 
     private GraphicsContext gc;
-    private LogoController controller;
+    private LogoController logoController;
+
+    private final Timer timer = new Timer();
+    private RunProgramTask task;
+    private boolean timerRunning = false;
 
 
     @FXML
@@ -55,6 +66,17 @@ public class LogoMainController {
                 initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
         });
 
+        intervalSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (intervalSlider.isValueChanging()) return;
+
+            sliderText.setText(String.format(Locale.ROOT, "Interval: %.1fs", newValue.doubleValue()));
+            if (!timerRunning) return;
+
+            task.cancel();
+            task = new RunProgramTask();
+            timer.schedule(task, 0, (long) (newValue.doubleValue() * 1000));
+        });
+
         gc = fxCanvas.getGraphicsContext2D();
     }
 
@@ -66,11 +88,11 @@ public class LogoMainController {
         canvas.backColorProperty().addListener(((observable, oldValue, newValue) ->
                 canvasPane.setBackground(new Background(new BackgroundFill(toFxColor(newValue), null, null)))));
 
-        controller = new LogoController(canvas);
+        logoController = new LogoController(canvas);
     }
 
     @FXML
-    private void onLoadClicked(Event event) {
+    private void onLoadClicked(Event ignoredEvent) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Logo program file");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
@@ -79,7 +101,8 @@ public class LogoMainController {
         File file = chooser.showOpenDialog(canvasPane.getScene().getWindow());
         if (file != null) {
             try {
-                controller.loadProgram(file);
+                logoController.loadProgram(file);
+                nextButton.setDisable(false);
             } catch (IOException e) {
                 infoText.setFill(Color.RED);
                 infoText.setText(e.getMessage());
@@ -88,21 +111,34 @@ public class LogoMainController {
     }
 
     @FXML
-    private void onNextClicked(Event event) {
-        if (!controller.executeNext())
+    private void onNextClicked(Event ignoredEvent) {
+        if (!logoController.executeNext())
             nextButton.setDisable(true);
     }
 
     @FXML
-    private void onPlayPauseClicked(Event event) {
-        ImageView imageView = new ImageView("/icons/icon_pause.png");
-        imageView.setFitHeight(30);
-        imageView.setFitWidth(30);
-        imageView.setPickOnBounds(true);
-        imageView.setPreserveRatio(true);
-        playPauseButton.setGraphic(imageView);
+    private void onPlayPauseClicked(Event ignoredEvent) {
+        if (timerRunning) {
+            pause();
+            return;
+        }
+
+        play();
     }
 
+
+    private void play() {
+        ((ImageView) playPauseButton.getGraphic()).setImage(new Image("/icons/icon_pause.png"));
+        task = new RunProgramTask();
+        timer.schedule(task, 0, (long) (intervalSlider.getValue() * 1000));
+        timerRunning = true;
+    }
+
+    private void pause() {
+        ((ImageView) playPauseButton.getGraphic()).setImage(new Image("/icons/icon_play.png"));
+        task.cancel();
+        timerRunning = false;
+    }
 
     private void drawLine(Line line) {
         gc.setStroke(toFxColor(line.getColor()));
@@ -126,7 +162,7 @@ public class LogoMainController {
      * is at the top)
      */
     private double convertYCoordinate(double y) {
-        return canvasPane.getHeight() - y;
+        return fxCanvas.getHeight() - y;
     }
 
     /**
@@ -137,5 +173,17 @@ public class LogoMainController {
      */
     private Color toFxColor(java.awt.Color color) {
         return Color.rgb(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+
+    private class RunProgramTask extends TimerTask {
+
+        @Override
+        public void run() {
+            if (!logoController.executeNext()) {
+                pause();
+                nextButton.setDisable(true);
+            }
+        }
     }
 }
