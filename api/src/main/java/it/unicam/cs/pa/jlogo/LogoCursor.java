@@ -1,6 +1,5 @@
 package it.unicam.cs.pa.jlogo;
 
-import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Cursor;
 import it.unicam.cs.pa.jlogo.model.Line;
 import it.unicam.cs.pa.jlogo.model.OnClosedAreaDrawnListener;
@@ -11,8 +10,6 @@ import java.util.Optional;
 
 public class LogoCursor implements Cursor {
 
-    private final Canvas canvas;
-
     private Point position;
     private int direction;
     private int penSize;
@@ -21,21 +18,16 @@ public class LogoCursor implements Cursor {
     private Color areaColor;
 
     private OnClosedAreaDrawnListener areaListener;
-    private int maxDistance;
     private CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
 
 
-    public LogoCursor(Canvas canvas) {
-        this.canvas = canvas;
-
-        position = canvas.getHome();
+    public LogoCursor(Point initialPosition) {
+        position = initialPosition;
         direction = 0;
         penSize = 1;
         plotting = true;
         lineColor = Color.BLACK;
         areaColor = Color.WHITE;
-
-        maxDistance = calculateMaxDistance();
     }
 
 
@@ -44,18 +36,25 @@ public class LogoCursor implements Cursor {
         if (distance == 0)
             return Optional.empty();
 
-        if (distance > maxDistance) distance = maxDistance;
         Point initialPosition = position;
         position = calculateNextPosition(distance);
-        maxDistance = calculateMaxDistance();
 
         return plotting ? draw(initialPosition, position) : Optional.empty();
     }
 
     @Override
+    public Point getPosition() {
+        return position;
+    }
+
+    @Override
     public void rotate(int degrees) {
         direction = (direction + degrees) % 360;
-        maxDistance = calculateMaxDistance();
+    }
+
+    @Override
+    public int getDirection() {
+        return direction;
     }
 
     @Override
@@ -88,19 +87,14 @@ public class LogoCursor implements Cursor {
         areaListener = listener;
     }
 
-    @Override
-    public int getDistanceFromHome() {
-        return position.getDistanceFrom(canvas.getHome());
-    }
-
     private Point calculateNextPosition(int distance) {
-        double angle = Math.toRadians(direction);
+        double angle = Math.toRadians(getDirection());
 
         double vDist = distance * Math.sin(angle);
         double hDist = distance * Math.cos(angle);
 
-        double x = hDist + position.x();
-        double y = vDist + position.y();
+        double x = hDist + getPosition().x();
+        double y = vDist + getPosition().y();
         return new Point(x, y);
     }
 
@@ -113,36 +107,6 @@ public class LogoCursor implements Cursor {
             return Optional.empty();
         }
         return Optional.of(line);
-    }
-
-    private int calculateMaxDistance() {
-        if (direction == 90)
-            return position.getDistanceFrom(new Point(position.x(), canvas.getHeight()));
-        if (direction == 270)
-            return position.getDistanceFrom(new Point(position.x(), 0));
-
-        double m = Math.tan(Math.toRadians(direction));
-        double intersVertSide;
-
-        if (direction > 90 && direction < 270) {
-            intersVertSide = -m * position.x() + position.y();
-            if (intersVertSide > 0 && intersVertSide < canvas.getHeight())
-                return position.getDistanceFrom(new Point(0, intersVertSide));
-        } else {
-            intersVertSide = m * canvas.getWidth() - m * position.x() + position.y();
-            if (intersVertSide > 0 && intersVertSide < canvas.getHeight())
-                return position.getDistanceFrom(new Point(canvas.getWidth(), intersVertSide));
-        }
-
-        if (intersVertSide > canvas.getHeight()) {
-            double intersAbove = (canvas.getHeight() - position.y() + m * position.x()) / m;
-            return position.getDistanceFrom(new Point(intersAbove, canvas.getHeight()));
-        }
-        if (intersVertSide < 0) {
-            double intersBelow = (-position.y() + m * position.x()) / m;
-            return position.getDistanceFrom(new Point(intersBelow, 0));
-        }
-        return 0;
     }
 
     private void callListener() {

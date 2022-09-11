@@ -14,7 +14,7 @@ class LogoCursorTest {
 
     @BeforeEach
     void setUp() {
-        cursor = new LogoCursor(new LogoCanvas(600, 400));
+        cursor = new LogoCursor(new Point(400, 400));
     }
 
     @Test

@@ -10,8 +10,10 @@ import it.unicam.cs.pa.jlogo.model.OnLineDrawnListener;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -33,26 +35,33 @@ public class LogoCanvas implements Canvas {
 
 
     /**
-     * Creates a new canvas with the specified dimensions
+     * Creates a new canvas with the specified dimensions and gets the cursor from
+     * the specified generator function
      *
-     * @param width  the width of the canvas
-     * @param height the height of the canvas
+     * @param width     the width of the canvas
+     * @param height    the height of the canvas
+     * @param generator a function that takes a {@link Point} as input and returns
+     *                  a {@link Cursor}
      */
-    public LogoCanvas(int width, int height) {
+    public LogoCanvas(int width, int height, Function<Point, Cursor> generator) {
         this.width = width;
         this.height = height;
-        this.cursor = new LogoCursor(this);
+        this.cursor = Objects.requireNonNull(generator).apply(getHome());
 
         backColor = Color.WHITE;
         cursor.setOnClosedAreaDrawnListener(this::receiveClosedArea);
     }
 
-
-    @Override
-    public void clear() {
-        lines.clear();
-        areas.clear();
+    /**
+     * Creates a new canvas with the specified dimensions and a default {@link LogoCursor}
+     *
+     * @param width  the width of the canvas
+     * @param height the height of the canvas
+     */
+    public LogoCanvas(int width, int height) {
+        this(width, height, LogoCursor::new);
     }
+
 
     @Override
     public void setBackColor(Color color) {
@@ -91,25 +100,70 @@ public class LogoCanvas implements Canvas {
 
     @Override
     public void moveCursor(int distance) {
-        Optional<Line> result = cursor.move(distance);
+        Optional<Line> result = cursor.move(Math.min(distance, calculateMaxDistance()));
         if (result.isEmpty())
             return;
 
         Line line = result.get();
-        if (areas.stream().flatMap(area -> area.getLines().stream()).noneMatch(line::equals)) {
-            lines.add(line);
-            if (lineListener != null) lineListener.lineDrawn(line);
-        }
+        lines.add(line);
+        if (lineListener != null) lineListener.lineDrawn(line);
     }
 
     @Override
+    public void clear() {
+        lines.clear();
+        areas.clear();
+    }
+
+    /**
+     * Registers a callback to be invoked when a new line is drawn
+     *
+     * @param listener the callback
+     */
     public void setOnLineDrawnListener(OnLineDrawnListener listener) {
         lineListener = listener;
     }
 
-    @Override
+    /**
+     * Registers a callback to be invoked when a new <b>complete</b> closed area is created
+     *
+     * @param listener the callback
+     */
     public void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener) {
         areaListener = listener;
+    }
+
+    private int calculateMaxDistance() {
+        int direction = cursor.getDirection();
+        Point position = cursor.getPosition();
+
+        if (direction == 90)
+            return position.getDistanceFrom(new Point(position.x(), getHeight()));
+        if (direction == 270)
+            return position.getDistanceFrom(new Point(position.x(), 0));
+
+        double m = Math.tan(Math.toRadians(direction));
+        double intersVertSide;
+
+        if (direction > 90 && direction < 270) {
+            intersVertSide = -m * position.x() + position.y();
+            if (intersVertSide > 0 && intersVertSide < getHeight())
+                return position.getDistanceFrom(new Point(0, intersVertSide));
+        } else {
+            intersVertSide = m * getWidth() - m * position.x() + position.y();
+            if (intersVertSide > 0 && intersVertSide < getHeight())
+                return position.getDistanceFrom(new Point(getWidth(), intersVertSide));
+        }
+
+        if (intersVertSide > getHeight()) {
+            double intersAbove = (getHeight() - position.y() + m * position.x()) / m;
+            return position.getDistanceFrom(new Point(intersAbove, getHeight()));
+        }
+        if (intersVertSide < 0) {
+            double intersBelow = (-position.y() + m * position.x()) / m;
+            return position.getDistanceFrom(new Point(intersBelow, 0));
+        }
+        return 0;
     }
 
     /**
@@ -126,10 +180,6 @@ public class LogoCanvas implements Canvas {
 
     /**
      * Finds all the areas connected to the given one and joins them
-     *
-     * @param area the area to join
-     * @return the new area created by joining all the connected ones,
-     * or <code>area</code> if none was found
      */
     private ClosedArea joinAreas(ClosedArea area) {
         List<ClosedArea> connectedAreas = areas.stream()

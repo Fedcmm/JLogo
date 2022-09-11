@@ -1,8 +1,14 @@
 package it.unicam.cs.pa.jlogo.app;
 
 import it.unicam.cs.pa.jlogo.LogoController;
+import it.unicam.cs.pa.jlogo.Point;
 import it.unicam.cs.pa.jlogo.model.ClosedArea;
 import it.unicam.cs.pa.jlogo.model.Line;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -15,8 +21,10 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +42,8 @@ public class LogoMainController {
     @FXML
     private Canvas fxCanvas;
     @FXML
+    private Polygon cursorPolygon;
+    @FXML
     private Button nextButton;
     @FXML
     private Button playPauseButton;
@@ -44,7 +54,7 @@ public class LogoMainController {
     @FXML
     private Text infoText;
 
-    private GraphicsContext gc;
+    private GraphicsContext canvasGraphics;
     private LogoController logoController;
 
     private final Timer timer = new Timer();
@@ -54,9 +64,6 @@ public class LogoMainController {
 
     @FXML
     public void initialize() {
-        fxCanvas.widthProperty().bind(canvasPane.widthProperty());
-        fxCanvas.heightProperty().bind(canvasPane.heightProperty());
-
         fxCanvas.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (fxCanvas.getHeight() != 0)
                 initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
@@ -74,35 +81,47 @@ public class LogoMainController {
 
             task.cancel();
             task = new RunProgramTask();
-            timer.schedule(task, 0, (long) (newValue.doubleValue() * 1000));
+            timer.schedule(task, 0, newValue.longValue() * 1000);
         });
 
-        gc = fxCanvas.getGraphicsContext2D();
+        canvasGraphics = fxCanvas.getGraphicsContext2D();
     }
 
     private void initializeLogoController(int width, int height) {
         ObservableLogoCanvas canvas = new ObservableLogoCanvas(width, height);
+
         canvas.setOnLineDrawnListener(this::drawLine);
         canvas.setOnClosedAreaDrawnListener(this::drawClosedArea);
+        canvas.setClearAction(this::clear);
 
         canvas.backColorProperty().addListener(((observable, oldValue, newValue) ->
                 canvasPane.setBackground(new Background(new BackgroundFill(toFxColor(newValue), null, null)))));
 
+        ObservableLogoCursor cursor = ((ObservableLogoCursor) canvas.getCursor());
+        cursor.positionProperty().addListener(this::canvasPositionChanged);
+        cursor.directionProperty().addListener(this::canvasDirectionChanged);
+        cursor.lineColorProperty().addListener(
+                (observable, oldValue, newValue) -> cursorPolygon.setStroke(toFxColor(newValue))
+        );
+
+        cursorPolygon.setTranslateX(canvas.getHome().x() - 10);
+        cursorPolygon.setTranslateY(convertYCoordinate(canvas.getHome().y()) - 10);
+
         logoController = new LogoController(canvas);
     }
 
+
+
     @FXML
     private void onLoadClicked(Event ignoredEvent) {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open Logo program file");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
-        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-
-        File file = chooser.showOpenDialog(canvasPane.getScene().getWindow());
+        File file = openFileChooser();
         if (file != null) {
             try {
                 logoController.loadProgram(file);
+
                 nextButton.setDisable(false);
+                infoText.setFill(Color.BLACK);
+                infoText.setText("Loaded file \"" + file.getName() + "\"");
             } catch (IOException e) {
                 infoText.setFill(Color.RED);
                 infoText.setText(e.getMessage());
@@ -127,8 +146,36 @@ public class LogoMainController {
     }
 
 
+    private void canvasPositionChanged(ObservableValue<? extends Point> observable, Point oldValue, Point newValue) {
+        TranslateTransition transition = new TranslateTransition(Duration.millis(300), cursorPolygon);
+        transition.setToX(newValue.x() - 10);
+        transition.setToY(convertYCoordinate(newValue.y()) - 10);
+        transition.setCycleCount(1);
+        transition.setAutoReverse(false);
+        transition.play();
+    }
+
+    private void canvasDirectionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(1);
+        timeline.setAutoReverse(false);
+        KeyValue kv = new KeyValue(cursorPolygon.rotateProperty(), -(newValue.intValue()));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(300), kv));
+        timeline.play();
+    }
+
+    private File openFileChooser() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Logo program file");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        return chooser.showOpenDialog(canvasPane.getScene().getWindow());
+    }
+
     private void play() {
         ((ImageView) playPauseButton.getGraphic()).setImage(new Image("/icons/icon_pause.png"));
+        nextButton.setDisable(true);
+
         task = new RunProgramTask();
         timer.schedule(task, 0, (long) (intervalSlider.getValue() * 1000));
         timerRunning = true;
@@ -136,14 +183,19 @@ public class LogoMainController {
 
     private void pause() {
         ((ImageView) playPauseButton.getGraphic()).setImage(new Image("/icons/icon_play.png"));
+        nextButton.setDisable(false);
         task.cancel();
         timerRunning = false;
     }
 
+    private void clear() {
+        canvasGraphics.clearRect(0, 0, fxCanvas.getWidth(), fxCanvas.getHeight());
+    }
+
     private void drawLine(Line line) {
-        gc.setStroke(toFxColor(line.getColor()));
-        gc.setLineWidth(line.getSize());
-        gc.strokeLine(line.getA().x(), convertYCoordinate(line.getA().y()),
+        canvasGraphics.setStroke(toFxColor(line.getColor()));
+        canvasGraphics.setLineWidth(line.getSize());
+        canvasGraphics.strokeLine(line.getA().x(), convertYCoordinate(line.getA().y()),
                 line.getB().x(), convertYCoordinate(line.getB().y()));
     }
 
@@ -152,8 +204,8 @@ public class LogoMainController {
 
         double[] xValues = area.getLines().stream().mapToDouble(line -> line.getA().x()).toArray();
         double[] yValues = area.getLines().stream().mapToDouble(line -> convertYCoordinate(line.getA().y())).toArray();
-        gc.setFill(toFxColor(area.getFillColor()));
-        gc.fillPolygon(xValues, yValues, xValues.length);
+        canvasGraphics.setFill(toFxColor(area.getFillColor()));
+        canvasGraphics.fillPolygon(xValues, yValues, xValues.length);
     }
 
 

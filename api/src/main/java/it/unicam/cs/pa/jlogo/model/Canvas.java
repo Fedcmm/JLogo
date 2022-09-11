@@ -11,11 +11,6 @@ import java.util.List;
 public interface Canvas {
 
     /**
-     * Deletes all the drawings in this canvas
-     */
-    void clear();
-
-    /**
      * Changes the background color of the canvas
      *
      * @param color the new color
@@ -56,24 +51,23 @@ public interface Canvas {
     void moveCursor(int distance);
 
     /**
-     * Registers a callback to be invoked when a new line is drawn
-     *
-     * @param listener the callback
+     * Deletes all the drawings in this canvas
      */
-    void setOnLineDrawnListener(OnLineDrawnListener listener);
+    void clear();
 
-    /**
-     * Registers a callback to be invoked when a new <b>complete</b> closed area is created
-     *
-     * @param listener the callback
-     */
-    void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener);
 
     /**
      * @return the <i>home</i> position of this canvas
      */
     default Point getHome() {
         return new Point(getWidth() / 2.0, getHeight() / 2.0);
+    }
+
+    /**
+     * Moves the cursor to the <i>home</i> position of this canvas
+     */
+    default void moveToHome() {
+        moveCursor(getCursor().getPosition().getDistanceFrom(getHome()));
     }
 
     /**
@@ -84,7 +78,7 @@ public interface Canvas {
      * @param g the green component
      * @param b the blue component
      *
-     * @throws IllegalArgumentException if r, g or b are outside of the range 0 to 255, inclusive
+     * @throws IllegalArgumentException if r, g or b are outside the range 0 to 255, inclusive
      */
     default void setBackColor(int r, int g, int b) {
         setBackColor(new Color(r, g, b));

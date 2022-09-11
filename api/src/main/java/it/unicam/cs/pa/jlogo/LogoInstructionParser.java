@@ -24,7 +24,7 @@ public class LogoInstructionParser implements InstructionParser {
             case "LEFT" -> parseLeft(instArgs);
             case "RIGHT" -> parseRight(instArgs);
             case "CLEARSCREEN" -> Canvas::clear;
-            case "HOME" -> canvas -> canvas.moveCursor(canvas.getCursor().getDistanceFromHome());
+            case "HOME" -> Canvas::moveToHome;
             case "PENUP" -> canvas -> canvas.getCursor().setPlotting(false);
             case "PENDOWN" -> canvas -> canvas.getCursor().setPlotting(true);
             case "SETPENCOLOR" -> parseSetPenColor(instArgs);

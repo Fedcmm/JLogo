@@ -11,7 +11,7 @@ import java.util.List;
 public interface ClosedArea {
 
     /**
-     * Adds a line to this area, this can only be done if the area is not complete
+     * Adds a line to this area. If the area is complete then the method has no effect
      *
      * @param line the line to add
      */
@@ -52,6 +52,7 @@ public interface ClosedArea {
      * @throws IllegalArgumentException if the two areas are not connected
      */
     ClosedArea join(ClosedArea other);
+
 
     /**
      * Checks if this area is connected to the given one

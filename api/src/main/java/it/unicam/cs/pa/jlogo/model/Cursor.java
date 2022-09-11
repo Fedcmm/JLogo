@@ -1,5 +1,7 @@
 package it.unicam.cs.pa.jlogo.model;
 
+import it.unicam.cs.pa.jlogo.Point;
+
 import java.awt.Color;
 import java.util.Optional;
 
@@ -19,12 +21,22 @@ public interface Cursor {
     Optional<Line> move(int distance);
 
     /**
+     * @return the current position of this cursor
+     */
+    Point getPosition();
+
+    /**
      * Rotates the cursor
      *
      * @param degrees the amount of degrees of rotation, positive to rotate counterclockwise,
      *                negative to rotate clockwise
      */
     void rotate(int degrees);
+
+    /**
+     * @return the current direction of this cursor
+     */
+    int getDirection();
 
     /**
      * Changes the thickness of the lines drawn by the cursor
@@ -64,10 +76,6 @@ public interface Cursor {
      */
     void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener);
 
-    /**
-     * @return the distance from the <i>home</i> position of the canvas this cursor is in
-     */
-    int getDistanceFromHome();
 
     /**
      * Changes the color of the lines drawn by the cursor using the specified red, green
@@ -77,7 +85,7 @@ public interface Cursor {
      * @param g the green component
      * @param b the blue component
      *
-     * @throws IllegalArgumentException if r, g or b are outside of the range 0 to 255, inclusive
+     * @throws IllegalArgumentException if r, g or b are outside the range 0 to 255, inclusive
      */
     default void setLineColor(int r, int g, int b) {
         setLineColor(new Color(r, g, b));
@@ -91,7 +99,7 @@ public interface Cursor {
      * @param g the green component
      * @param b the blue component
      *
-     * @throws IllegalArgumentException if r, g or b are outside of the range 0 to 255, inclusive
+     * @throws IllegalArgumentException if r, g or b are outside the range 0 to 255, inclusive
      */
     default void setAreaColor(int r, int g, int b) {
         setAreaColor(new Color(r, g, b));

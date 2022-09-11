@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-
 <?import javafx.scene.canvas.Canvas?>
-
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Text?>
-
 
 <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.LogoMainController">
 
     <Pane fx:id="canvasPane">
-        <Canvas fx:id="fxCanvas"/>
+        <Canvas fx:id="fxCanvas" width="${canvasPane.width}" height="${canvasPane.height}"/>
+
+        <Polygon fx:id="cursorPolygon" points="0.0, 0.0, 0.0, 20.0, 20.0, 10.0" fill="transparent" stroke="black"/>
+        <!--<Group fx:id="cursorGroup" layoutX="200.0" layoutY="200.0">
+        </Group>-->
     </Pane>
 
     <BorderPane maxHeight="65.0" minHeight="65.0">
@@ -22,14 +28,14 @@
         <center>
             <ToolBar prefHeight="40.0">
 
-                <Slider fx:id="intervalSlider" min="0.5" max="30.0" value="2.0"
-                        snapToTicks="true" majorTickUnit="0.5" minorTickCount="0" blockIncrement="0.5" />
+                <Slider fx:id="intervalSlider" min="0.1" max="2.0" value="0.5"
+                        snapToTicks="true" majorTickUnit="0.1" minorTickCount="0" blockIncrement="0.1" />
 
-                <Text fx:id="sliderText" text="Interval: 2.0s"/>
+                <Text fx:id="sliderText" text="Interval: 0.5s"/>
 
                 <Pane HBox.hgrow="ALWAYS"/>
 
-                <Button fx:id="nextButton" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
+                <Button fx:id="nextButton" disable="true" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
                     <graphic>
                         <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../icons/icon_forward.png"/>
