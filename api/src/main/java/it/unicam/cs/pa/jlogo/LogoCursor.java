@@ -11,7 +11,7 @@ import java.util.Optional;
 public class LogoCursor implements Cursor {
 
     private Point position;
-    private int direction;
+    private double direction;
     private int penSize;
     private boolean plotting;
     private Color lineColor;
@@ -32,7 +32,7 @@ public class LogoCursor implements Cursor {
 
 
     @Override
-    public Optional<Line> move(int distance) {
+    public Optional<Line> move(double distance) {
         if (distance == 0)
             return Optional.empty();
 
@@ -48,12 +48,12 @@ public class LogoCursor implements Cursor {
     }
 
     @Override
-    public void rotate(int degrees) {
+    public void rotate(double degrees) {
         direction = (direction + degrees) % 360;
     }
 
     @Override
-    public int getDirection() {
+    public double getDirection() {
         return direction;
     }
 
@@ -87,7 +87,7 @@ public class LogoCursor implements Cursor {
         areaListener = listener;
     }
 
-    private Point calculateNextPosition(int distance) {
+    private Point calculateNextPosition(double distance) {
         double angle = Math.toRadians(getDirection());
 
         double vDist = distance * Math.sin(angle);
@@ -100,7 +100,7 @@ public class LogoCursor implements Cursor {
 
     private Optional<Line> draw(Point a, Point b) {
         Line line = new LogoLine(a, b, penSize, lineColor);
-        currentLines.add(line);
+        if (!currentLines.contains(line)) currentLines.add(line);
 
         if (currentLines.isComplete()) {
             callListener();

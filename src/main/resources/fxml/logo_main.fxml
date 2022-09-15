@@ -19,8 +19,6 @@
         <Canvas fx:id="fxCanvas" width="${canvasPane.width}" height="${canvasPane.height}"/>
 
         <Polygon fx:id="cursorPolygon" points="0.0, 0.0, 0.0, 20.0, 20.0, 10.0" fill="transparent" stroke="black"/>
-        <!--<Group fx:id="cursorGroup" layoutX="200.0" layoutY="200.0">
-        </Group>-->
     </Pane>
 
     <BorderPane maxHeight="65.0" minHeight="65.0">
@@ -51,7 +49,7 @@
                     </graphic>
                 </Button>
 
-                <Button fx:id="playPauseButton" mnemonicParsing="false" text="PlayPause" onAction="#onPlayPauseClicked">
+                <Button fx:id="playPauseButton" disable="true" mnemonicParsing="false" text="PlayPause" onAction="#onPlayPauseClicked">
                     <graphic>
                         <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../icons/icon_play.png"/>

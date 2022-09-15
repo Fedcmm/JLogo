@@ -32,9 +32,9 @@ public record Point(double x, double y) {
         return Double.compare(this.y, other.y);
     }
 
-    public int getDistanceFrom(Point other) {
-        double dX = Math.abs(this.x - other.x);
-        double dY = Math.abs(this.y - other.y);
-        return (int) Math.round(Math.sqrt(dX*dX + dY*dY));
+    public double distanceFrom(Point other) {
+        double dX = this.x - other.x;
+        double dY = this.y - other.y;
+        return Math.sqrt(dX*dX + dY*dY);
     }
 }

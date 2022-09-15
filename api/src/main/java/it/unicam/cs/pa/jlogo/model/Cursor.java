@@ -18,7 +18,7 @@ public interface Cursor {
      * @return the shape drawn by the movement, or {@link Optional#empty()} if
      * drawing is disabled
      */
-    Optional<Line> move(int distance);
+    Optional<Line> move(double distance);
 
     /**
      * @return the current position of this cursor
@@ -31,12 +31,12 @@ public interface Cursor {
      * @param degrees the amount of degrees of rotation, positive to rotate counterclockwise,
      *                negative to rotate clockwise
      */
-    void rotate(int degrees);
+    void rotate(double degrees);
 
     /**
      * @return the current direction of this cursor
      */
-    int getDirection();
+    double getDirection();
 
     /**
      * Changes the thickness of the lines drawn by the cursor

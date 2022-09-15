@@ -65,7 +65,7 @@ public class LogoCanvas implements Canvas {
 
     @Override
     public void setBackColor(Color color) {
-        backColor = color;
+        backColor = Objects.requireNonNull(color);
     }
 
     @Override
@@ -99,14 +99,38 @@ public class LogoCanvas implements Canvas {
     }
 
     @Override
-    public void moveCursor(int distance) {
+    public void moveCursor(double distance) {
         Optional<Line> result = cursor.move(Math.min(distance, calculateMaxDistance()));
         if (result.isEmpty())
             return;
 
         Line line = result.get();
-        lines.add(line);
-        if (lineListener != null) lineListener.lineDrawn(line);
+        if (areas.stream().map(ClosedArea::getLines).noneMatch(lines1 -> lines1.contains(line))) {
+            lines.add(line);
+            if (lineListener != null) lineListener.lineDrawn(line);
+        }
+    }
+
+    @Override
+    public void moveCursorToHome() {
+        Point home = getHome();
+        Point position = cursor.getPosition();
+        if (home.equals(position)) return;
+
+        double dX = home.x() - position.x();
+        double dY = home.y() - position.y();
+        double lineAngle = Math.atan(dY / dX);
+
+        double finalAngle;
+        if (Double.isInfinite(lineAngle))
+            finalAngle = dY > 0 ? Math.PI/2 : -Math.PI/2;
+        else
+            finalAngle = dX < 0 ? Math.PI + lineAngle : lineAngle;
+        double angleDiff = Math.toDegrees(finalAngle) - cursor.getDirection();
+
+        cursor.rotate(angleDiff);
+        moveCursor(Math.sqrt(dX*dX + dY*dY)); // No need to call Point.distanceFrom and calculate d's again
+        cursor.rotate(-angleDiff);
     }
 
     @Override
@@ -133,14 +157,14 @@ public class LogoCanvas implements Canvas {
         areaListener = listener;
     }
 
-    private int calculateMaxDistance() {
-        int direction = cursor.getDirection();
+    private double calculateMaxDistance() {
+        double direction = cursor.getDirection();
         Point position = cursor.getPosition();
 
         if (direction == 90)
-            return position.getDistanceFrom(new Point(position.x(), getHeight()));
+            return position.distanceFrom(new Point(position.x(), getHeight()));
         if (direction == 270)
-            return position.getDistanceFrom(new Point(position.x(), 0));
+            return position.distanceFrom(new Point(position.x(), 0));
 
         double m = Math.tan(Math.toRadians(direction));
         double intersVertSide;
@@ -148,20 +172,20 @@ public class LogoCanvas implements Canvas {
         if (direction > 90 && direction < 270) {
             intersVertSide = -m * position.x() + position.y();
             if (intersVertSide > 0 && intersVertSide < getHeight())
-                return position.getDistanceFrom(new Point(0, intersVertSide));
+                return position.distanceFrom(new Point(0, intersVertSide));
         } else {
             intersVertSide = m * getWidth() - m * position.x() + position.y();
             if (intersVertSide > 0 && intersVertSide < getHeight())
-                return position.getDistanceFrom(new Point(getWidth(), intersVertSide));
+                return position.distanceFrom(new Point(getWidth(), intersVertSide));
         }
 
         if (intersVertSide > getHeight()) {
             double intersAbove = (getHeight() - position.y() + m * position.x()) / m;
-            return position.getDistanceFrom(new Point(intersAbove, getHeight()));
+            return position.distanceFrom(new Point(intersAbove, getHeight()));
         }
         if (intersVertSide < 0) {
             double intersBelow = (-position.y() + m * position.x()) / m;
-            return position.getDistanceFrom(new Point(intersBelow, 0));
+            return position.distanceFrom(new Point(intersBelow, 0));
         }
         return 0;
     }

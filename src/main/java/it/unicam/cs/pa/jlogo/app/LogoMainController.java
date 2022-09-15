@@ -64,6 +64,7 @@ public class LogoMainController {
 
     @FXML
     public void initialize() {
+        // TODO: 13/09/22 Replace listeners with one-time call
         fxCanvas.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (fxCanvas.getHeight() != 0)
                 initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
@@ -81,7 +82,7 @@ public class LogoMainController {
 
             task.cancel();
             task = new RunProgramTask();
-            timer.schedule(task, 0, newValue.longValue() * 1000);
+            timer.schedule(task, 0, (long) (newValue.doubleValue() * 1000));
         });
 
         canvasGraphics = fxCanvas.getGraphicsContext2D();
@@ -98,8 +99,8 @@ public class LogoMainController {
                 canvasPane.setBackground(new Background(new BackgroundFill(toFxColor(newValue), null, null)))));
 
         ObservableLogoCursor cursor = ((ObservableLogoCursor) canvas.getCursor());
-        cursor.positionProperty().addListener(this::canvasPositionChanged);
-        cursor.directionProperty().addListener(this::canvasDirectionChanged);
+        cursor.positionProperty().addListener(this::cursorPositionChanged);
+        cursor.directionProperty().addListener(this::cursorDirectionChanged);
         cursor.lineColorProperty().addListener(
                 (observable, oldValue, newValue) -> cursorPolygon.setStroke(toFxColor(newValue))
         );
@@ -120,6 +121,7 @@ public class LogoMainController {
                 logoController.loadProgram(file);
 
                 nextButton.setDisable(false);
+                playPauseButton.setDisable(false);
                 infoText.setFill(Color.BLACK);
                 infoText.setText("Loaded file \"" + file.getName() + "\"");
             } catch (IOException e) {
@@ -131,8 +133,10 @@ public class LogoMainController {
 
     @FXML
     private void onNextClicked(Event ignoredEvent) {
-        if (!logoController.executeNext())
+        if (!logoController.executeNext()) {
             nextButton.setDisable(true);
+            playPauseButton.setDisable(true);
+        }
     }
 
     @FXML
@@ -146,7 +150,7 @@ public class LogoMainController {
     }
 
 
-    private void canvasPositionChanged(ObservableValue<? extends Point> observable, Point oldValue, Point newValue) {
+    private void cursorPositionChanged(ObservableValue<? extends Point> observable, Point oldValue, Point newValue) {
         TranslateTransition transition = new TranslateTransition(Duration.millis(300), cursorPolygon);
         transition.setToX(newValue.x() - 10);
         transition.setToY(convertYCoordinate(newValue.y()) - 10);
@@ -155,7 +159,7 @@ public class LogoMainController {
         transition.play();
     }
 
-    private void canvasDirectionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void cursorDirectionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(1);
         timeline.setAutoReverse(false);
@@ -188,10 +192,6 @@ public class LogoMainController {
         timerRunning = false;
     }
 
-    private void clear() {
-        canvasGraphics.clearRect(0, 0, fxCanvas.getWidth(), fxCanvas.getHeight());
-    }
-
     private void drawLine(Line line) {
         canvasGraphics.setStroke(toFxColor(line.getColor()));
         canvasGraphics.setLineWidth(line.getSize());
@@ -206,6 +206,10 @@ public class LogoMainController {
         double[] yValues = area.getLines().stream().mapToDouble(line -> convertYCoordinate(line.getA().y())).toArray();
         canvasGraphics.setFill(toFxColor(area.getFillColor()));
         canvasGraphics.fillPolygon(xValues, yValues, xValues.length);
+    }
+
+    private void clear() {
+        canvasGraphics.clearRect(0, 0, fxCanvas.getWidth(), fxCanvas.getHeight());
     }
 
 
@@ -235,6 +239,7 @@ public class LogoMainController {
             if (!logoController.executeNext()) {
                 pause();
                 nextButton.setDisable(true);
+                playPauseButton.setDisable(true);
             }
         }
     }

@@ -166,9 +166,9 @@ public class CircularList<E> implements Collection<E> {
         else
             last.next = newNode;
         last = newNode;
+        size++; modCount++;
         if (size > 2 && connectPredicate.test(last.elem, first.elem))
             last.next = first;
-        size++; modCount++;
     }
 
     private boolean throwUnsupported() {

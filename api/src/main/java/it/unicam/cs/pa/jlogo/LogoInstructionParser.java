@@ -24,7 +24,7 @@ public class LogoInstructionParser implements InstructionParser {
             case "LEFT" -> parseLeft(instArgs);
             case "RIGHT" -> parseRight(instArgs);
             case "CLEARSCREEN" -> Canvas::clear;
-            case "HOME" -> Canvas::moveToHome;
+            case "HOME" -> Canvas::moveCursorToHome;
             case "PENUP" -> canvas -> canvas.getCursor().setPlotting(false);
             case "PENDOWN" -> canvas -> canvas.getCursor().setPlotting(true);
             case "SETPENCOLOR" -> parseSetPenColor(instArgs);
@@ -117,18 +117,17 @@ public class LogoInstructionParser implements InstructionParser {
     }
 
 
-    private RepeatInstruction parseRepeat(String[] args) throws IOException {
-        int num = Integer.parseInt(args[1]);
-        List<Instruction> instructions = new ArrayList<>();
-
+    private Instruction parseRepeat(String[] args) throws IOException {
         try {
-            String commands = args[2].substring(args[2].indexOf('[') + 1, args[2].lastIndexOf(']')).trim();
-            instructions = parseCommands(commands);
-        } catch (Exception e) {
-            throwException(args);
-        }
+            int num = Integer.parseInt(args[1]);
 
-        return new RepeatInstruction(num, instructions);
+            String commands = args[2].substring(args[2].indexOf('[') + 1, args[2].lastIndexOf(']')).trim();
+            List<Instruction> instructions = parseCommands(commands);
+            return new RepeatInstruction(num, instructions);
+
+        } catch (Exception e) {
+            return throwException(args);
+        }
     }
 
     /**

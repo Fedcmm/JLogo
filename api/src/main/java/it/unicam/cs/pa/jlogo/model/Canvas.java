@@ -14,6 +14,8 @@ public interface Canvas {
      * Changes the background color of the canvas
      *
      * @param color the new color
+     *
+     * @throws NullPointerException if color is null
      */
     void setBackColor(Color color);
 
@@ -26,6 +28,7 @@ public interface Canvas {
      * @return the width of this canvas
      */
     int getWidth();
+
     /**
      * @return the height of this canvas
      */
@@ -41,14 +44,17 @@ public interface Canvas {
      */
     List<ClosedArea> getClosedAreas();
 
+    /**
+     * @return the cursor contained in this canvas
+     */
     Cursor getCursor();
 
     /**
-     * Moves the cursor this canvas contains
+     * Moves the cursor contained in this canvas
      *
      * @param distance the distance the cursor should travel
      */
-    void moveCursor(int distance);
+    void moveCursor(double distance);
 
     /**
      * Deletes all the drawings in this canvas
@@ -66,8 +72,8 @@ public interface Canvas {
     /**
      * Moves the cursor to the <i>home</i> position of this canvas
      */
-    default void moveToHome() {
-        moveCursor(getCursor().getPosition().getDistanceFrom(getHome()));
+    default void moveCursorToHome() {
+        moveCursor(getCursor().getPosition().distanceFrom(getHome()));
     }
 
     /**

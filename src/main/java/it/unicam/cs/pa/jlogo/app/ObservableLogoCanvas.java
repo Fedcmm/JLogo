@@ -5,6 +5,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.awt.Color;
+import java.util.Objects;
 
 public class ObservableLogoCanvas extends LogoCanvas {
 
@@ -29,7 +30,7 @@ public class ObservableLogoCanvas extends LogoCanvas {
 
     @Override
     public void setBackColor(Color color) {
-        backColor.set(color);
+        backColor.set(Objects.requireNonNull(color));
     }
 
     @Override
