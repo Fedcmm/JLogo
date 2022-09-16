@@ -67,10 +67,10 @@ public class LogoController {
     }
 
     /**
-     * Resets the execution of the current program and clears the canvas
+     * Resets the current program and the canvas
      */
     public void reset() {
-        canvas.clear();
+        canvas.reset();
         program.reset();
     }
 }

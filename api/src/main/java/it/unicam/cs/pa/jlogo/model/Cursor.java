@@ -67,7 +67,7 @@ public interface Cursor {
      *
      * @param color the new color
      */
-    void setAreaColor(Color color);
+    void setFillColor(Color color);
 
     /**
      * Registers a callback to be invoked when the cursor stops plotting
@@ -101,7 +101,7 @@ public interface Cursor {
      *
      * @throws IllegalArgumentException if r, g or b are outside the range 0 to 255, inclusive
      */
-    default void setAreaColor(int r, int g, int b) {
-        setAreaColor(new Color(r, g, b));
+    default void setFillColor(int r, int g, int b) {
+        setFillColor(new Color(r, g, b));
     }
 }

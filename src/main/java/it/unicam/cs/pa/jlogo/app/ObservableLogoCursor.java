@@ -36,7 +36,9 @@ public class ObservableLogoCursor extends LogoCursor {
 
     @Override
     public void rotate(double degrees) {
-        direction.set((getDirection() + degrees) % 360);
+        double newDir = (direction.get() + degrees) % 360;
+        if (newDir < 0) newDir -= 360;
+        direction.set(newDir);
     }
 
     @Override

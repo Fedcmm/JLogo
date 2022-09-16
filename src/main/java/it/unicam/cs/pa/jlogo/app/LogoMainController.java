@@ -6,14 +6,18 @@ import it.unicam.cs.pa.jlogo.model.ClosedArea;
 import it.unicam.cs.pa.jlogo.model.Line;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,8 +33,6 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class LogoMainController {
 
@@ -44,9 +46,13 @@ public class LogoMainController {
     @FXML
     private Polygon cursorPolygon;
     @FXML
+    private Button resetButton;
+    @FXML
+    private Button loadButton;
+    @FXML
     private Button nextButton;
     @FXML
-    private Button playPauseButton;
+    private Button startStopButton;
     @FXML
     private Slider intervalSlider;
     @FXML
@@ -57,13 +63,14 @@ public class LogoMainController {
     private GraphicsContext canvasGraphics;
     private LogoController logoController;
 
-    private final Timer timer = new Timer();
-    private RunProgramTask task;
-    private boolean timerRunning = false;
+    private final PauseTransition programTransition = new PauseTransition();
+    private boolean programRunning = false;
 
 
     @FXML
     public void initialize() {
+        Locale.setDefault(Locale.US);
+
         // TODO: 13/09/22 Replace listeners with one-time call
         fxCanvas.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (fxCanvas.getHeight() != 0)
@@ -74,18 +81,11 @@ public class LogoMainController {
                 initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
         });
 
-        intervalSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (intervalSlider.isValueChanging()) return;
-
-            sliderText.setText(String.format(Locale.ROOT, "Interval: %.1fs", newValue.doubleValue()));
-            if (!timerRunning) return;
-
-            task.cancel();
-            task = new RunProgramTask();
-            timer.schedule(task, 0, (long) (newValue.doubleValue() * 1000));
-        });
+        intervalSlider.valueProperty().addListener(this::sliderValueChanged);
 
         canvasGraphics = fxCanvas.getGraphicsContext2D();
+
+        programTransition.setOnFinished(this::executeProgramStep);
     }
 
     private void initializeLogoController(int width, int height) {
@@ -101,9 +101,7 @@ public class LogoMainController {
         ObservableLogoCursor cursor = ((ObservableLogoCursor) canvas.getCursor());
         cursor.positionProperty().addListener(this::cursorPositionChanged);
         cursor.directionProperty().addListener(this::cursorDirectionChanged);
-        cursor.lineColorProperty().addListener(
-                (observable, oldValue, newValue) -> cursorPolygon.setStroke(toFxColor(newValue))
-        );
+        cursor.lineColorProperty().addListener((observable, oldValue, newValue) -> cursorPolygon.setStroke(toFxColor(newValue)));
 
         cursorPolygon.setTranslateX(canvas.getHome().x() - 10);
         cursorPolygon.setTranslateY(convertYCoordinate(canvas.getHome().y()) - 10);
@@ -112,6 +110,16 @@ public class LogoMainController {
     }
 
 
+    //region Button event handlers
+    @FXML
+    private void onResetClicked(Event ignoredEvent) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Attention");
+        dialog.setContentText("Do you want to delete all drawings and reset program execution?");
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+        dialog.showAndWait().filter(result -> result == ButtonType.YES).ifPresent(r -> reset());
+    }
 
     @FXML
     private void onLoadClicked(Event ignoredEvent) {
@@ -120,8 +128,7 @@ public class LogoMainController {
             try {
                 logoController.loadProgram(file);
 
-                nextButton.setDisable(false);
-                playPauseButton.setDisable(false);
+                setStoppedAppearance();
                 infoText.setFill(Color.BLACK);
                 infoText.setText("Loaded file \"" + file.getName() + "\"");
             } catch (IOException e) {
@@ -135,21 +142,91 @@ public class LogoMainController {
     private void onNextClicked(Event ignoredEvent) {
         if (!logoController.executeNext()) {
             nextButton.setDisable(true);
-            playPauseButton.setDisable(true);
+            startStopButton.setDisable(true);
         }
     }
 
     @FXML
-    private void onPlayPauseClicked(Event ignoredEvent) {
-        if (timerRunning) {
-            pause();
+    private void onStartStopClicked(Event ignoredEvent) {
+        if (programRunning) {
+            stopExecution();
             return;
         }
 
-        play();
+        startExecution();
+    }
+    //endregion
+
+    private void reset() {
+        setStoppedAppearance();
+        cursorPolygon.setTranslateX(0);
+        cursorPolygon.setTranslateY(0);
+
+        logoController.reset();
+        clear();
     }
 
+    private File openFileChooser() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Logo program file");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        return chooser.showOpenDialog(canvasPane.getScene().getWindow());
+    }
 
+    //region Program execution
+    private void executeProgramStep(ActionEvent event) {
+        if (logoController.executeNext()) {
+            startExecution();
+            return;
+        }
+
+        stopExecution();
+    }
+    private void startExecution() {
+        setStartedAppearance();
+
+        programTransition.setDuration(Duration.seconds(intervalSlider.getValue()));
+        programTransition.playFromStart();
+        programRunning = true;
+    }
+
+    private void stopExecution() {
+        setStoppedAppearance();
+
+        programTransition.pause();
+        programRunning = false;
+    }
+
+    private void setStartedAppearance() {
+        ((ImageView) startStopButton.getGraphic()).setImage(new Image("/icons/icon_pause.png"));
+        startStopButton.setText("Stop");
+        resetButton.setDisable(true);
+        loadButton.setDisable(true);
+        nextButton.setDisable(true);
+    }
+
+    private void setStoppedAppearance() {
+        ((ImageView) startStopButton.getGraphic()).setImage(new Image("/icons/icon_play.png"));
+        startStopButton.setText("Start");
+        resetButton.setDisable(false);
+        loadButton.setDisable(false);
+        startStopButton.setDisable(false);
+        nextButton.setDisable(false);
+    }
+    //endregion
+
+    private void sliderValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        if (intervalSlider.isValueChanging()) return;
+
+        sliderText.setText(String.format(Locale.ROOT, "Interval: %.1fs", newValue.doubleValue()));
+        if (!programRunning) return;
+
+        programTransition.setDuration(Duration.seconds(intervalSlider.getValue()));
+        programTransition.playFromStart();
+    }
+
+    //region Cursor changed
     private void cursorPositionChanged(ObservableValue<? extends Point> observable, Point oldValue, Point newValue) {
         TranslateTransition transition = new TranslateTransition(Duration.millis(300), cursorPolygon);
         transition.setToX(newValue.x() - 10);
@@ -167,31 +244,9 @@ public class LogoMainController {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(300), kv));
         timeline.play();
     }
+    //endregion
 
-    private File openFileChooser() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open Logo program file");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
-        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        return chooser.showOpenDialog(canvasPane.getScene().getWindow());
-    }
-
-    private void play() {
-        ((ImageView) playPauseButton.getGraphic()).setImage(new Image("/icons/icon_pause.png"));
-        nextButton.setDisable(true);
-
-        task = new RunProgramTask();
-        timer.schedule(task, 0, (long) (intervalSlider.getValue() * 1000));
-        timerRunning = true;
-    }
-
-    private void pause() {
-        ((ImageView) playPauseButton.getGraphic()).setImage(new Image("/icons/icon_play.png"));
-        nextButton.setDisable(false);
-        task.cancel();
-        timerRunning = false;
-    }
-
+    //region Drawing
     private void drawLine(Line line) {
         canvasGraphics.setStroke(toFxColor(line.getColor()));
         canvasGraphics.setLineWidth(line.getSize());
@@ -207,6 +262,7 @@ public class LogoMainController {
         canvasGraphics.setFill(toFxColor(area.getFillColor()));
         canvasGraphics.fillPolygon(xValues, yValues, xValues.length);
     }
+    //endregion
 
     private void clear() {
         canvasGraphics.clearRect(0, 0, fxCanvas.getWidth(), fxCanvas.getHeight());
@@ -229,18 +285,5 @@ public class LogoMainController {
      */
     private Color toFxColor(java.awt.Color color) {
         return Color.rgb(color.getRed(), color.getGreen(), color.getBlue());
-    }
-
-
-    private class RunProgramTask extends TimerTask {
-
-        @Override
-        public void run() {
-            if (!logoController.executeNext()) {
-                pause();
-                nextButton.setDisable(true);
-                playPauseButton.setDisable(true);
-            }
-        }
     }
 }

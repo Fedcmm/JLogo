@@ -33,6 +33,22 @@
 
                 <Pane HBox.hgrow="ALWAYS"/>
 
+                <Button fx:id="resetButton" disable="true" mnemonicParsing="false" text="Reset" onAction="#onResetClicked">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/icon_trash.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="loadButton" mnemonicParsing="false" text="Load" onAction="#onLoadClicked">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/icon_open.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
                 <Button fx:id="nextButton" disable="true" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
                     <graphic>
                         <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
@@ -41,15 +57,7 @@
                     </graphic>
                 </Button>
 
-                <Button mnemonicParsing="false" text="Load" onAction="#onLoadClicked">
-                    <graphic>
-                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
-                            <Image url="@../icons/icon_open.png"/>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <Button fx:id="playPauseButton" disable="true" mnemonicParsing="false" text="PlayPause" onAction="#onPlayPauseClicked">
+                <Button fx:id="startStopButton" disable="true" mnemonicParsing="false" text="Start" onAction="#onStartStopClicked">
                     <graphic>
                         <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../icons/icon_play.png"/>

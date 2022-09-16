@@ -139,6 +139,20 @@ public class LogoCanvas implements Canvas {
         areas.clear();
     }
 
+    @Override
+    public void reset() {
+        cursor.setPlotting(false);
+        moveCursorToHome();
+        cursor.setPlotting(true);
+        cursor.rotate(-cursor.getDirection());
+        cursor.setPenSize(1);
+        cursor.setLineColor(Color.BLACK);
+        cursor.setFillColor(Color.WHITE);
+
+        setBackColor(Color.WHITE);
+        clear();
+    }
+
     /**
      * Registers a callback to be invoked when a new line is drawn
      *

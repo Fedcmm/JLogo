@@ -61,6 +61,8 @@ public interface Canvas {
      */
     void clear();
 
+    void reset();
+
 
     /**
      * @return the <i>home</i> position of this canvas

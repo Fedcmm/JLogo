@@ -90,7 +90,7 @@ public class LogoInstructionParser implements InstructionParser {
             int r = Integer.parseInt(args[1]);
             int g = Integer.parseInt(args[2]);
             int b = Integer.parseInt(args[3]);
-            return canvas -> canvas.getCursor().setAreaColor(r, g, b);
+            return canvas -> canvas.getCursor().setFillColor(r, g, b);
         } catch (Exception e) {
             return throwException(args);
         }

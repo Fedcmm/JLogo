@@ -15,7 +15,7 @@ public class LogoCursor implements Cursor {
     private int penSize;
     private boolean plotting;
     private Color lineColor;
-    private Color areaColor;
+    private Color fillColor;
 
     private OnClosedAreaDrawnListener areaListener;
     private CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
@@ -27,7 +27,7 @@ public class LogoCursor implements Cursor {
         penSize = 1;
         plotting = true;
         lineColor = Color.BLACK;
-        areaColor = Color.WHITE;
+        fillColor = Color.WHITE;
     }
 
 
@@ -50,6 +50,7 @@ public class LogoCursor implements Cursor {
     @Override
     public void rotate(double degrees) {
         direction = (direction + degrees) % 360;
+        if (direction < 0) direction += 360;
     }
 
     @Override
@@ -78,8 +79,8 @@ public class LogoCursor implements Cursor {
     }
 
     @Override
-    public void setAreaColor(Color color) {
-        areaColor = color;
+    public void setFillColor(Color color) {
+        fillColor = color;
     }
 
     @Override
@@ -111,7 +112,7 @@ public class LogoCursor implements Cursor {
 
     private void callListener() {
         if (areaListener != null && !currentLines.isEmpty()) {
-            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, areaColor));
+            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, fillColor));
             currentLines = new CircularList<>(Line::isConnectedTo);
         }
     }
