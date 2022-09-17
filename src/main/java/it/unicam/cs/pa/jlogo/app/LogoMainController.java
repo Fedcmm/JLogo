@@ -9,6 +9,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -30,8 +31,10 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Locale;
 
 public class LogoMainController {
@@ -71,25 +74,13 @@ public class LogoMainController {
     public void initialize() {
         Locale.setDefault(Locale.US);
 
-        // TODO: 13/09/22 Replace listeners with one-time call
-        fxCanvas.widthProperty().addListener((observable, oldValue, newValue) -> {
-            if (fxCanvas.getHeight() != 0)
-                initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
-        });
-        fxCanvas.heightProperty().addListener((observable, oldValue, newValue) -> {
-            if (fxCanvas.getWidth() != 0)
-                initializeLogoController(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
-        });
-
-        intervalSlider.valueProperty().addListener(this::sliderValueChanged);
-
         canvasGraphics = fxCanvas.getGraphicsContext2D();
-
         programTransition.setOnFinished(this::executeProgramStep);
+        Platform.runLater(this::initializeLogoController);
     }
 
-    private void initializeLogoController(int width, int height) {
-        ObservableLogoCanvas canvas = new ObservableLogoCanvas(width, height);
+    private void initializeLogoController() {
+        ObservableLogoCanvas canvas = new ObservableLogoCanvas(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
 
         canvas.setOnLineDrawnListener(this::drawLine);
         canvas.setOnClosedAreaDrawnListener(this::drawClosedArea);
@@ -110,7 +101,16 @@ public class LogoMainController {
     }
 
 
-    //region Button event handlers
+    //region Event handlers
+    @FXML
+    private void onSliderReleased(Event ignoredEvent) {
+        sliderText.setText(String.format("Interval: %.1fs", intervalSlider.getValue()));
+        if (!programRunning) return;
+
+        programTransition.setDuration(Duration.seconds(intervalSlider.getValue()));
+        programTransition.playFromStart();
+    }
+
     @FXML
     private void onResetClicked(Event ignoredEvent) {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -132,8 +132,7 @@ public class LogoMainController {
                 infoText.setFill(Color.BLACK);
                 infoText.setText("Loaded file \"" + file.getName() + "\"");
             } catch (IOException e) {
-                infoText.setFill(Color.RED);
-                infoText.setText(e.getMessage());
+                showErrorMessage(e.getMessage());
             }
         }
     }
@@ -154,6 +153,15 @@ public class LogoMainController {
         }
 
         startExecution();
+    }
+
+    @FXML
+    private void onLinkClicked(Event ignoredEvent) {
+        try {
+            Desktop.getDesktop().browse(URI.create("https://icons8.com"));
+        } catch (IOException e) {
+            showErrorMessage("Unable to launch browser");
+        }
     }
     //endregion
 
@@ -216,16 +224,6 @@ public class LogoMainController {
     }
     //endregion
 
-    private void sliderValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        if (intervalSlider.isValueChanging()) return;
-
-        sliderText.setText(String.format(Locale.ROOT, "Interval: %.1fs", newValue.doubleValue()));
-        if (!programRunning) return;
-
-        programTransition.setDuration(Duration.seconds(intervalSlider.getValue()));
-        programTransition.playFromStart();
-    }
-
     //region Cursor changed
     private void cursorPositionChanged(ObservableValue<? extends Point> observable, Point oldValue, Point newValue) {
         TranslateTransition transition = new TranslateTransition(Duration.millis(300), cursorPolygon);
@@ -266,6 +264,11 @@ public class LogoMainController {
 
     private void clear() {
         canvasGraphics.clearRect(0, 0, fxCanvas.getWidth(), fxCanvas.getHeight());
+    }
+
+    private void showErrorMessage(String message) {
+        infoText.setFill(Color.RED);
+        infoText.setText(message);
     }
 
 

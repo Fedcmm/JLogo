@@ -13,6 +13,7 @@
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.Hyperlink?>
 <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.LogoMainController">
 
     <Pane fx:id="canvasPane">
@@ -27,7 +28,8 @@
             <ToolBar prefHeight="40.0">
 
                 <Slider fx:id="intervalSlider" min="0.1" max="2.0" value="0.5"
-                        snapToTicks="true" majorTickUnit="0.1" minorTickCount="0" blockIncrement="0.1" />
+                        snapToTicks="true" majorTickUnit="0.1" minorTickCount="0" blockIncrement="0.1"
+                        onMouseReleased="#onSliderReleased"/>
 
                 <Text fx:id="sliderText" text="Interval: 0.5s"/>
 
@@ -69,7 +71,15 @@
         </center>
 
         <bottom>
-            <Text fx:id="infoText"/>
+            <HBox>
+                <Text fx:id="infoText"/>
+
+                <Pane HBox.hgrow="ALWAYS"/>
+
+                <Text text="Icons by "/>
+                <Hyperlink text="Icons8" textFill="blue" underline="true"
+                           style="-fx-border-color: transparent; -fx-padding: -2 4 -2 0" onAction="#onLinkClicked"/>
+            </HBox>
         </bottom>
 
     </BorderPane>
