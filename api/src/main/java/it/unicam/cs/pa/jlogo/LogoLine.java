@@ -8,6 +8,7 @@ import java.util.Objects;
 /**
  * Represents a line drawn in a Logo program
  */
+@SuppressWarnings("ClassCanBeRecord")
 public class LogoLine implements Line {
 
     private final Point a;
@@ -56,10 +57,9 @@ public class LogoLine implements Line {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof LogoLine logoLine)) return false;
 
-        LogoLine other = (LogoLine) o;
-        return this.a.equals(other.a) && this.b.equals(other.b);
+        return this.a.equals(logoLine.a) && this.b.equals(logoLine.b);
     }
 
     @Override

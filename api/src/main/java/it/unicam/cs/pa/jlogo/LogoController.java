@@ -50,7 +50,7 @@ public class LogoController {
      */
     public void loadProgram(File file) throws IOException {
         program = reader.read(file);
-        canvas.clear();
+        canvas.reset();
     }
 
     /**

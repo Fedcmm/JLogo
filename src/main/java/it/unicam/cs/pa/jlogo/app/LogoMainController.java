@@ -167,8 +167,6 @@ public class LogoMainController {
 
     private void reset() {
         setStoppedAppearance();
-        cursorPolygon.setTranslateX(0);
-        cursorPolygon.setTranslateY(0);
 
         logoController.reset();
         clear();
@@ -238,7 +236,7 @@ public class LogoMainController {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(1);
         timeline.setAutoReverse(false);
-        KeyValue kv = new KeyValue(cursorPolygon.rotateProperty(), -(newValue.intValue()));
+        KeyValue kv = new KeyValue(cursorPolygon.rotateProperty(), -(newValue.doubleValue()));
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(300), kv));
         timeline.play();
     }

@@ -1,5 +1,7 @@
 package it.unicam.cs.pa.jlogo;
 
+import java.util.Objects;
+
 /**
  * Holds coordinates for a point in a canvas
  *
@@ -8,33 +10,25 @@ package it.unicam.cs.pa.jlogo;
  */
 public record Point(double x, double y) {
 
-    /**
-     * Compares the x coordinate of this point with the other
-     *
-     * @param other the other point to compare with
-     * @return a value less than 0 if this point is to the left of the other,
-     * a value greater than 0 if this point is to the right of the other, and
-     * the value 0 if the two points are on the same vertical axis
-     */
-    public int checkPositionOnX(Point other) {
-        return Double.compare(this.x, other.x);
-    }
-
-    /**
-     * Compares the y coordinate of this point with the other
-     *
-     * @param other the other point to compare with
-     * @return a value less than 0 if this point is below the other,
-     * a value greater than 0 if this point is above the other, and
-     * the value 0 if the two points are on the same horizontal axis
-     */
-    public int checkPositionOnY(Point other) {
-        return Double.compare(this.y, other.y);
-    }
+    public static final double EPSILON = 0.0000001d;
 
     public double distanceFrom(Point other) {
         double dX = this.x - other.x;
         double dY = this.y - other.y;
         return Math.sqrt(dX*dX + dY*dY);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Point other = (Point) o;
+        return Math.abs(other.x - this.x) < EPSILON && Math.abs(other.y - this.y) < EPSILON;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

@@ -61,6 +61,9 @@ public interface Canvas {
      */
     void clear();
 
+    /**
+     * Resets the state of this canvas
+     */
     void reset();
 
 
