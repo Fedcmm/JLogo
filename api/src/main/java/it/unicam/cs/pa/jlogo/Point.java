@@ -3,7 +3,7 @@ package it.unicam.cs.pa.jlogo;
 import java.util.Objects;
 
 /**
- * Holds coordinates for a point in a canvas
+ * Holds coordinates for a point
  *
  * @param x the x coordinate
  * @param y the y coordinate
@@ -12,6 +12,13 @@ public record Point(double x, double y) {
 
     public static final double EPSILON = 0.0000001d;
 
+
+    /**
+     * Calculates the distance between this point and another
+     *
+     * @param other another point
+     * @return the distance between this point and the given one
+     */
     public double distanceFrom(Point other) {
         double dX = this.x - other.x;
         double dY = this.y - other.y;

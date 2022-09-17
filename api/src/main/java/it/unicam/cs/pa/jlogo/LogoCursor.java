@@ -1,13 +1,17 @@
 package it.unicam.cs.pa.jlogo;
 
+import it.unicam.cs.pa.jlogo.model.ClosedArea;
 import it.unicam.cs.pa.jlogo.model.Cursor;
 import it.unicam.cs.pa.jlogo.model.Line;
-import it.unicam.cs.pa.jlogo.model.OnClosedAreaDrawnListener;
 import it.unicam.cs.pa.jlogo.util.CircularList;
 
 import java.awt.Color;
 import java.util.Optional;
+import java.util.function.Consumer;
 
+/**
+ * Default implementation of {@link Cursor}
+ */
 public class LogoCursor implements Cursor {
 
     private Point position;
@@ -17,10 +21,15 @@ public class LogoCursor implements Cursor {
     private Color lineColor;
     private Color fillColor;
 
-    private OnClosedAreaDrawnListener areaListener;
+    private Consumer<ClosedArea> areaListener;
     private CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
 
 
+    /**
+     * Creates a new cursor located in the specified position
+     *
+     * @param initialPosition the initial position of the cursor
+     */
     public LogoCursor(Point initialPosition) {
         position = initialPosition;
         direction = 0;
@@ -84,7 +93,7 @@ public class LogoCursor implements Cursor {
     }
 
     @Override
-    public void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener) {
+    public void setOnClosedAreaDrawnListener(Consumer<ClosedArea> listener) {
         areaListener = listener;
     }
 
@@ -112,7 +121,7 @@ public class LogoCursor implements Cursor {
 
     private void callListener() {
         if (areaListener != null && !currentLines.isEmpty()) {
-            areaListener.closedAreaDrawn(new LogoClosedArea(currentLines, fillColor));
+            areaListener.accept(new LogoClosedArea(currentLines, fillColor));
             currentLines = new CircularList<>(Line::isConnectedTo);
         }
     }

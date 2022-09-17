@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LogoCursorTest {
@@ -20,7 +19,6 @@ class LogoCursorTest {
     @Test
     void moveTest() {
         assertTrue(cursor.move(150).isPresent());
-        assertEquals(cursor.move(600).orElseThrow().getB().x(), 600);
         cursor.setPlotting(false);
 
         assertTrue(cursor.move(200).isEmpty());
@@ -34,11 +32,6 @@ class LogoCursorTest {
         cursor.setOnClosedAreaDrawnListener(Assertions::assertNotNull);
         cursor.move(50);
         cursor.setPlotting(false);
-    }
-
-    @Test
-    void complexMovementsTest() {
-        // TODO: 03/09/22 Write
     }
 
     private void drawCompleteArea() {

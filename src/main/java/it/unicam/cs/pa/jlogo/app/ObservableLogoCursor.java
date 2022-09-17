@@ -11,6 +11,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.awt.Color;
 import java.util.Optional;
 
+/**
+ * A cursor which stores position, direction and line color in properties
+ */
 public class ObservableLogoCursor extends LogoCursor {
 
     private final ObjectProperty<Point> position = new SimpleObjectProperty<>(this, "position");
@@ -18,6 +21,11 @@ public class ObservableLogoCursor extends LogoCursor {
     private final ObjectProperty<Color> lineColor = new SimpleObjectProperty<>(this, "lineColor");
 
 
+    /**
+     * Creates a new cursor located in the specified position
+     *
+     * @param initialPosition the initial position of the cursor
+     */
     public ObservableLogoCursor(Point initialPosition) {
         super(initialPosition);
 

@@ -4,6 +4,7 @@ import it.unicam.cs.pa.jlogo.Point;
 
 import java.awt.Color;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Represents a cursor in a Logo program
@@ -74,7 +75,7 @@ public interface Cursor {
      *
      * @param listener the callback
      */
-    void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener);
+    void setOnClosedAreaDrawnListener(Consumer<ClosedArea> listener);
 
 
     /**

@@ -7,6 +7,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.awt.Color;
 import java.util.Objects;
 
+/**
+ * A canvas which stores the back color in a property and can execute a callback
+ * when it is cleared
+ */
 public class ObservableLogoCanvas extends LogoCanvas {
 
     private final ObjectProperty<Color> backColor = new SimpleObjectProperty<>(this, "backColor");

@@ -4,8 +4,6 @@ import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.ClosedArea;
 import it.unicam.cs.pa.jlogo.model.Cursor;
 import it.unicam.cs.pa.jlogo.model.Line;
-import it.unicam.cs.pa.jlogo.model.OnClosedAreaDrawnListener;
-import it.unicam.cs.pa.jlogo.model.OnLineDrawnListener;
 
 import java.awt.Color;
 import java.util.HashSet;
@@ -13,11 +11,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Default implementation of {@link Canvas}
+ * Default implementation of {@link Canvas}, provides listeners to execute actions
+ * whenever a line or closed area is drawn
  */
 public class LogoCanvas implements Canvas {
 
@@ -30,8 +30,8 @@ public class LogoCanvas implements Canvas {
 
     private Color backColor;
 
-    private OnLineDrawnListener lineListener;
-    private OnClosedAreaDrawnListener areaListener;
+    private Consumer<Line> lineListener;
+    private Consumer<ClosedArea> areaListener;
 
 
     /**
@@ -107,7 +107,7 @@ public class LogoCanvas implements Canvas {
         Line line = result.get();
         if (areas.stream().map(ClosedArea::getLines).noneMatch(lines1 -> lines1.contains(line))) {
             lines.add(line);
-            if (lineListener != null) lineListener.lineDrawn(line);
+            if (lineListener != null) lineListener.accept(line);
         }
     }
 
@@ -158,7 +158,7 @@ public class LogoCanvas implements Canvas {
      *
      * @param listener the callback
      */
-    public void setOnLineDrawnListener(OnLineDrawnListener listener) {
+    public void setOnLineDrawnListener(Consumer<Line> listener) {
         lineListener = listener;
     }
 
@@ -167,7 +167,7 @@ public class LogoCanvas implements Canvas {
      *
      * @param listener the callback
      */
-    public void setOnClosedAreaDrawnListener(OnClosedAreaDrawnListener listener) {
+    public void setOnClosedAreaDrawnListener(Consumer<ClosedArea> listener) {
         areaListener = listener;
     }
 
@@ -212,7 +212,7 @@ public class LogoCanvas implements Canvas {
 
         if (area.isComplete()) {
             area.getLines().forEach(lines::remove);
-            if (areaListener != null) areaListener.closedAreaDrawn(area);
+            if (areaListener != null) areaListener.accept(area);
         }
     }
 
