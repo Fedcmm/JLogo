@@ -17,10 +17,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/logo_main.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/main_scene.fxml")));
         primaryStage.setResizable(false);
         primaryStage.setTitle("JLogo");
-        primaryStage.setScene(new Scene(root, LogoMainController.DEFAULT_WIDTH, LogoMainController.DEFAULT_HEIGHT));
+        primaryStage.setScene(new Scene(root, MainSceneController.DEFAULT_WIDTH, MainSceneController.DEFAULT_HEIGHT));
         primaryStage.show();
     }
 }

@@ -6,6 +6,7 @@ import it.unicam.cs.pa.jlogo.model.Line;
 import it.unicam.cs.pa.jlogo.util.CircularList;
 
 import java.awt.Color;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -84,12 +85,12 @@ public class LogoCursor implements Cursor {
 
     @Override
     public void setLineColor(Color color) {
-        lineColor = color;
+        lineColor = Objects.requireNonNull(color);
     }
 
     @Override
     public void setFillColor(Color color) {
-        fillColor = color;
+        fillColor = Objects.requireNonNull(color);
     }
 
     @Override

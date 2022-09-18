@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.jlogo.instructions;
+package it.unicam.cs.pa.jlogo;
 
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Instruction;
@@ -6,6 +6,9 @@ import it.unicam.cs.pa.jlogo.model.Instruction;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Contains multiple instructions and executes them in order for a set number of times
+ */
 public class RepeatInstruction implements Instruction {
 
     private final int num;

@@ -14,8 +14,7 @@ public interface Cursor {
     /**
      * Moves the cursor
      *
-     * @param distance the distance to travel. If negative, the cursor
-     *                 will move backwards
+     * @param distance the distance to travel. If negative, the cursor will move backwards
      * @return the shape drawn by the movement, or {@link Optional#empty()} if
      * drawing is disabled
      */
@@ -60,6 +59,8 @@ public interface Cursor {
      * Changes the color of the lines drawn by the cursor
      *
      * @param color the new color
+     *
+     * @throws NullPointerException if color is <code>null</code>
      */
     void setLineColor(Color color);
 
@@ -67,6 +68,8 @@ public interface Cursor {
      * Changes the color of the closed areas created by the cursor
      *
      * @param color the new color
+     *
+     * @throws NullPointerException if color is <code>null</code>
      */
     void setFillColor(Color color);
 

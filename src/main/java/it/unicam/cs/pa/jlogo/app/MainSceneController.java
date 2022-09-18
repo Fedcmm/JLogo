@@ -37,11 +37,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Locale;
 
-public class LogoMainController {
+public class MainSceneController {
 
     public static final int DEFAULT_HEIGHT = 600;
     public static final int DEFAULT_WIDTH = 750;
 
+    //region FXML fields
     @FXML
     private Pane canvasPane;
     @FXML
@@ -62,6 +63,7 @@ public class LogoMainController {
     private Text sliderText;
     @FXML
     private Text infoText;
+    //endregion
 
     private GraphicsContext canvasGraphics;
     private LogoController logoController;
@@ -74,6 +76,9 @@ public class LogoMainController {
     public void initialize() {
         Locale.setDefault(Locale.US);
 
+        intervalSlider.valueProperty().addListener((obs, old, newValue) ->
+                sliderText.setText(String.format("Interval: %.1fs", newValue.doubleValue())));
+
         canvasGraphics = fxCanvas.getGraphicsContext2D();
         programTransition.setOnFinished(this::executeProgramStep);
         Platform.runLater(this::initializeLogoController);
@@ -81,18 +86,8 @@ public class LogoMainController {
 
     private void initializeLogoController() {
         ObservableLogoCanvas canvas = new ObservableLogoCanvas(fxCanvas.widthProperty().intValue(), fxCanvas.heightProperty().intValue());
-
-        canvas.setOnLineDrawnListener(this::drawLine);
-        canvas.setOnClosedAreaDrawnListener(this::drawClosedArea);
-        canvas.setClearAction(this::clear);
-
-        canvas.backColorProperty().addListener(((observable, oldValue, newValue) ->
-                canvasPane.setBackground(new Background(new BackgroundFill(toFxColor(newValue), null, null)))));
-
-        ObservableLogoCursor cursor = ((ObservableLogoCursor) canvas.getCursor());
-        cursor.positionProperty().addListener(this::cursorPositionChanged);
-        cursor.directionProperty().addListener(this::cursorDirectionChanged);
-        cursor.lineColorProperty().addListener((observable, oldValue, newValue) -> cursorPolygon.setStroke(toFxColor(newValue)));
+        setupCanvasListeners(canvas);
+        setupCursorListeners(((ObservableLogoCursor) canvas.getCursor()));
 
         cursorPolygon.setTranslateX(canvas.getHome().x() - 10);
         cursorPolygon.setTranslateY(convertYCoordinate(canvas.getHome().y()) - 10);
@@ -100,11 +95,25 @@ public class LogoMainController {
         logoController = new LogoController(canvas);
     }
 
+    private void setupCanvasListeners(ObservableLogoCanvas canvas) {
+        canvas.setOnLineDrawnListener(this::drawLine);
+        canvas.setOnClosedAreaDrawnListener(this::drawClosedArea);
+        canvas.setClearAction(this::clear);
+
+        canvas.backColorProperty().addListener(((obs, old, newValue) ->
+                canvasPane.setBackground(new Background(new BackgroundFill(toFxColor(newValue), null, null)))));
+    }
+
+    private void setupCursorListeners(ObservableLogoCursor cursor) {
+        cursor.positionProperty().addListener(this::cursorPositionChanged);
+        cursor.directionProperty().addListener(this::cursorDirectionChanged);
+        cursor.lineColorProperty().addListener((obs, old, newValue) -> cursorPolygon.setStroke(toFxColor(newValue)));
+    }
+
 
     //region Event handlers
     @FXML
     private void onSliderReleased(Event ignoredEvent) {
-        sliderText.setText(String.format("Interval: %.1fs", intervalSlider.getValue()));
         if (!programRunning) return;
 
         programTransition.setDuration(Duration.seconds(intervalSlider.getValue()));
@@ -181,7 +190,7 @@ public class LogoMainController {
     }
 
     //region Program execution
-    private void executeProgramStep(ActionEvent event) {
+    private void executeProgramStep(ActionEvent ignoredEvent) {
         if (logoController.executeNext()) {
             startExecution();
             return;
@@ -223,7 +232,7 @@ public class LogoMainController {
     //endregion
 
     //region Cursor changed
-    private void cursorPositionChanged(ObservableValue<? extends Point> observable, Point oldValue, Point newValue) {
+    private void cursorPositionChanged(ObservableValue<? extends Point> ignored1, Point ignored2, Point newValue) {
         TranslateTransition transition = new TranslateTransition(Duration.millis(300), cursorPolygon);
         transition.setToX(newValue.x() - 10);
         transition.setToY(convertYCoordinate(newValue.y()) - 10);
@@ -232,7 +241,7 @@ public class LogoMainController {
         transition.play();
     }
 
-    private void cursorDirectionChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void cursorDirectionChanged(ObservableValue<? extends Number> ignored1, Number ignored2, Number newValue) {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(1);
         timeline.setAutoReverse(false);
@@ -279,10 +288,7 @@ public class LogoMainController {
     }
 
     /**
-     * Converts an awt color into a JavaFx color
-     *
-     * @param color a {@link java.awt.Color}
-     * @return a {@link Color} instance with the same rgb components as the parameter
+     * Converts a java.awt color into a JavaFx color
      */
     private Color toFxColor(java.awt.Color color) {
         return Color.rgb(color.getRed(), color.getGreen(), color.getBlue());

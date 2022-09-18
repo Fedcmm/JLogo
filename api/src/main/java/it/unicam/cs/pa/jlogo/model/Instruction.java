@@ -8,7 +8,7 @@ public interface Instruction {
     /**
      * Executes the instruction
      *
-     * @param canvas the canvas that receives the instruction
+     * @param canvas the canvas on which to execute the instruction
      */
     void execute(Canvas canvas);
 }

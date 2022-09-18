@@ -1,6 +1,5 @@
 package it.unicam.cs.pa.jlogo;
 
-import it.unicam.cs.pa.jlogo.instructions.RepeatInstruction;
 import it.unicam.cs.pa.jlogo.model.Canvas;
 import it.unicam.cs.pa.jlogo.model.Instruction;
 import it.unicam.cs.pa.jlogo.model.InstructionParser;
@@ -124,7 +123,6 @@ public class LogoInstructionParser implements InstructionParser {
             String commands = args[2].substring(args[2].indexOf('[') + 1, args[2].lastIndexOf(']')).trim();
             List<Instruction> instructions = parseCommands(commands);
             return new RepeatInstruction(num, instructions);
-
         } catch (Exception e) {
             return throwException(args);
         }

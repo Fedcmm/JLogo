@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -11,7 +12,10 @@ import java.util.function.BiPredicate;
 /**
  * A simple linked list where all elements are logically connected by the given {@link BiPredicate}.
  * The list allows its elements to connect back to the first one, once this happens no more elements
- * can be added
+ * can be added.
+ * <p>
+ * This class does not implement the {@link List} interface because all the methods involving an
+ * index would be unsupported anyway
  *
  * @param <E> the type of the elements in this list
  */
@@ -167,6 +171,7 @@ public class CircularList<E> implements Collection<E> {
             last.next = newNode;
         last = newNode;
         size++; modCount++;
+
         if (size > 2 && connectPredicate.test(last.elem, first.elem))
             last.next = first;
     }

@@ -60,14 +60,23 @@ public class ObservableLogoCursor extends LogoCursor {
         lineColor.set(color);
     }
 
+    /**
+     * @return the property holding the position of this cursor
+     */
     public ObjectProperty<Point> positionProperty() {
         return position;
     }
 
+    /**
+     * @return the property holding the direction of this cursor
+     */
     public DoubleProperty directionProperty() {
         return direction;
     }
 
+    /**
+     * @return the property holding the line color of this cursor
+     */
     public ObjectProperty<Color> lineColorProperty() {
         return lineColor;
     }

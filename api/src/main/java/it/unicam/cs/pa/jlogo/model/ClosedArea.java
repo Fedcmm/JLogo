@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Represents a closed area in a Logo program, that is, a sequence of lines
- * that start and end in the same point. The area can be incomplete, meaning that the
+ * that starts and ends in the same point. The area can be incomplete, meaning that the
  * first and last line are not connected
  */
 public interface ClosedArea {

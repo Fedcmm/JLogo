@@ -36,7 +36,7 @@ public interface Line {
      * @param other another line
      * @return <code>true</code> if the lines share exactly one point
      *
-     * @throws NullPointerException if other is null
+     * @throws NullPointerException if other is <code>null</code>
      */
     boolean isConnectedTo(Line other);
 }

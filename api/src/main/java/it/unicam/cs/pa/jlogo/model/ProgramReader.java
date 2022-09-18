@@ -14,7 +14,7 @@ public interface ProgramReader {
      * Reads a program from a string
      *
      * @param s the string with the program
-     * @return a {@link Program} object
+     * @return a {@link Program} object representing the program
      *
      * @throws IOException if the string is malformed or the instructions
      * syntax is wrong
@@ -25,7 +25,7 @@ public interface ProgramReader {
      * Reads a program from the file at the given {@link Path}
      *
      * @param path the path of the file with the instructions
-     * @return a {@link Program} object
+     * @return a {@link Program} object representing the program
      *
      * @throws IOException if there are problems reading the file or the instructions
      * syntax is wrong
@@ -38,7 +38,7 @@ public interface ProgramReader {
      * Reads a program from the given {@link File}
      *
      * @param file the file with the instructions
-     * @return a {@link Program} object
+     * @return a {@link Program} object representing the program
      *
      * @throws IOException if there are problems reading the file or the instructions
      * syntax is wrong
