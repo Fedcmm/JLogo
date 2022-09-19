@@ -19,7 +19,7 @@ class LogoClosedAreaTest {
 
 
     @Test
-    void join() {
+    void shouldJoinAreas() {
         LogoClosedArea area1 = new LogoClosedArea(getFirstAreaLines(), Color.BLACK);
         LogoClosedArea area2 = new LogoClosedArea(getSecondAreaLines(), Color.BLACK);
         List<Line> joinedLines = area1.join(area2).getLines();

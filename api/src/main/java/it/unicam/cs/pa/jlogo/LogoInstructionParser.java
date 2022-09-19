@@ -17,7 +17,7 @@ public class LogoInstructionParser implements InstructionParser {
     @Override
     public Instruction parse(String s) throws IOException {
         String[] instArgs = s.split(" ");
-        return switch (instArgs[0]) {
+        return switch (instArgs[0].toUpperCase()) {
             case "FORWARD" -> parseForward(instArgs);
             case "BACKWARD" -> parseBackward(instArgs);
             case "LEFT" -> parseLeft(instArgs);

@@ -38,23 +38,31 @@
 
                 <Button fx:id="resetButton" disable="true" mnemonicParsing="false" text="Reset" onAction="#onResetClicked">
                     <graphic>
-                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../icons/icon_trash.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="saveButton" disable="true" mnemonicParsing="false" text="Save" onAction="#onSaveClicked">
+                    <graphic>
+                        <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/icon_save.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
 
                 <Button fx:id="loadButton" mnemonicParsing="false" text="Load" onAction="#onLoadClicked">
                     <graphic>
-                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
-                            <Image url="@../icons/icon_open.png"/>
+                        <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../icons/icon_load.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
 
                 <Button fx:id="nextButton" disable="true" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
                     <graphic>
-                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../icons/icon_forward.png"/>
                         </ImageView>
                     </graphic>
@@ -62,7 +70,7 @@
 
                 <Button fx:id="startStopButton" disable="true" mnemonicParsing="false" text="Start" onAction="#onStartStopClicked">
                     <graphic>
-                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../icons/icon_play.png"/>
                         </ImageView>
                     </graphic>

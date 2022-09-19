@@ -17,18 +17,26 @@ class LogoCursorTest {
     }
 
     @Test
-    void moveTest() {
+    void shouldDraw() {
         assertTrue(cursor.move(150).isPresent());
-        cursor.setPlotting(false);
+    }
 
+    @Test
+    void shouldNotDraw() {
+        assertTrue(cursor.move(0).isEmpty());
+
+        cursor.setPlotting(false);
         assertTrue(cursor.move(200).isEmpty());
     }
 
     @Test
-    void listenerCallsTest() {
+    void shouldCallListenerOnCompleteArea() {
         cursor.setOnClosedAreaDrawnListener(area -> assertTrue(area.isComplete()));
         drawCompleteArea();
+    }
 
+    @Test
+    void shouldCallListenerOnStopPlotting() {
         cursor.setOnClosedAreaDrawnListener(Assertions::assertNotNull);
         cursor.move(50);
         cursor.setPlotting(false);

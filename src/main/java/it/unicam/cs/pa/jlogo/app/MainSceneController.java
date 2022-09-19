@@ -52,6 +52,8 @@ public class MainSceneController {
     @FXML
     private Button resetButton;
     @FXML
+    private Button saveButton;
+    @FXML
     private Button loadButton;
     @FXML
     private Button nextButton;
@@ -131,15 +133,26 @@ public class MainSceneController {
     }
 
     @FXML
+    private void onSaveClicked(Event ignoredEvent) {
+        File file = showSaveFileChooser();
+        if (file != null) {
+            try {
+                logoController.save(file);
+                showInfoMessage("Written file \"" + file.getName() + "\"");
+            } catch (IOException e) {
+                showErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    @FXML
     private void onLoadClicked(Event ignoredEvent) {
-        File file = openFileChooser();
+        File file = showLoadFileChooser();
         if (file != null) {
             try {
                 logoController.loadProgram(file);
-
                 setStoppedAppearance();
-                infoText.setFill(Color.BLACK);
-                infoText.setText("Loaded file \"" + file.getName() + "\"");
+                showInfoMessage("Loaded file \"" + file.getName() + "\"");
             } catch (IOException e) {
                 showErrorMessage(e.getMessage());
             }
@@ -181,10 +194,18 @@ public class MainSceneController {
         clear();
     }
 
-    private File openFileChooser() {
+    private File showSaveFileChooser() {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plain text files (*.txt)", "*.txt"));
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        return chooser.showSaveDialog(canvasPane.getScene().getWindow());
+    }
+
+    private File showLoadFileChooser() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Logo program file");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.jlp", "*.jlp"));
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JLogo program files (*.jlp)", "*.jlp"));
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plain text files (*.txt)", "*.txt"));
         chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         return chooser.showOpenDialog(canvasPane.getScene().getWindow());
     }
@@ -217,6 +238,7 @@ public class MainSceneController {
         ((ImageView) startStopButton.getGraphic()).setImage(new Image("/icons/icon_pause.png"));
         startStopButton.setText("Stop");
         resetButton.setDisable(true);
+        saveButton.setDisable(true);
         loadButton.setDisable(true);
         nextButton.setDisable(true);
     }
@@ -225,6 +247,7 @@ public class MainSceneController {
         ((ImageView) startStopButton.getGraphic()).setImage(new Image("/icons/icon_play.png"));
         startStopButton.setText("Start");
         resetButton.setDisable(false);
+        saveButton.setDisable(false);
         loadButton.setDisable(false);
         startStopButton.setDisable(false);
         nextButton.setDisable(false);
@@ -271,6 +294,11 @@ public class MainSceneController {
 
     private void clear() {
         canvasGraphics.clearRect(0, 0, fxCanvas.getWidth(), fxCanvas.getHeight());
+    }
+
+    private void showInfoMessage(String message) {
+        infoText.setFill(Color.BLACK);
+        infoText.setText(message);
     }
 
     private void showErrorMessage(String message) {

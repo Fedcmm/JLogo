@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Classes implementing this interface can read a {@link Program} from a string
+ * Interface for reading a {@link Program} from a string
  */
 public interface ProgramReader {
 

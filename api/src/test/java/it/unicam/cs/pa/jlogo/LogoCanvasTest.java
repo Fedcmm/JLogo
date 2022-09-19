@@ -19,22 +19,26 @@ class LogoCanvasTest {
     }
 
     @Test
-    void completeAreaTest() {
+    void shouldReturnArea() {
         drawCompleteArea();
+        assertEquals(1, canvas.getClosedAreas().size());
         assertTrue(canvas.getLines().isEmpty());
-        assertEquals(1, canvas.getClosedAreas().size());
-
-        drawIncompleteArea();
-        assertEquals(1, canvas.getClosedAreas().size());
     }
 
     @Test
-    void moveCursorToHomeTest() {
+    void shouldNotReturnArea() {
+        drawIncompleteArea();
+        assertEquals(0, canvas.getClosedAreas().size());
+        assertEquals(2, canvas.getLines().size());
+    }
+
+    @Test
+    void shouldMoveToHome() {
         canvas.moveCursor(40);
         canvas.moveCursorToHome();
         assertEquals(canvas.getHome(), cursor.getPosition());
         
-        randomMovements();
+        otherMovements();
         canvas.moveCursorToHome();
         assertEquals(canvas.getHome(), cursor.getPosition());
     }
@@ -57,7 +61,7 @@ class LogoCanvasTest {
         cursor.setPlotting(false);
     }
     
-    private void randomMovements() {
+    private void otherMovements() {
         cursor.rotate(171);
         canvas.moveCursor(40);
         cursor.rotate(-28);
