@@ -27,7 +27,7 @@ public class LogoProgramReader implements ProgramReader {
 
     @Override
     public Program read(String s) throws IOException {
-        String[] instArray = s.split("\n");
+        String[] instArray = s.split("\r\n|[\r\n]");
 
         Instruction[] instructions = new Instruction[instArray.length];
         for (int i = 0; i < instArray.length; i++) {
