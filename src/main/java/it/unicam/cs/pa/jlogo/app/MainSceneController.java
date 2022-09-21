@@ -74,6 +74,7 @@ public class MainSceneController {
     private boolean programRunning = false;
 
 
+    //region Initialization
     @FXML
     public void initialize() {
         Locale.setDefault(Locale.US);
@@ -111,6 +112,7 @@ public class MainSceneController {
         cursor.directionProperty().addListener(this::cursorDirectionChanged);
         cursor.lineColorProperty().addListener((obs, old, newValue) -> cursorPolygon.setStroke(toFxColor(newValue)));
     }
+    //endregion
 
 
     //region Event handlers
@@ -204,7 +206,6 @@ public class MainSceneController {
     private File showLoadFileChooser() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Logo program file");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JLogo program files (*.jlp)", "*.jlp"));
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plain text files (*.txt)", "*.txt"));
         chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         return chooser.showOpenDialog(canvasPane.getScene().getWindow());

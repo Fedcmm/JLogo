@@ -19,7 +19,10 @@ based on your OS:
 After building, use the wrapper again to execute the `run` command that will 
 start the program.
 
+
 ## Using the program
+
+Instructions have to be placed in a _.txt_ file, one per line.
 
 The program has the option to execute the instructions one by one or 
 automatically, in which case the interval between two instructions can be 
