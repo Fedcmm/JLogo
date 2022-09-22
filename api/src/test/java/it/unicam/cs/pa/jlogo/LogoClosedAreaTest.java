@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.awt.Color;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LogoClosedAreaTest {
@@ -22,11 +21,24 @@ class LogoClosedAreaTest {
     void shouldJoinAreas() {
         LogoClosedArea area1 = new LogoClosedArea(getFirstAreaLines(), Color.BLACK);
         LogoClosedArea area2 = new LogoClosedArea(getSecondAreaLines(), Color.BLACK);
+
         List<Line> joinedLines = area1.join(area2).getLines();
-        assertAll(() -> assertTrue(joinedLines.contains(line1)),
-                () -> assertTrue(joinedLines.contains(line2)),
-                () -> assertTrue(joinedLines.contains(line3)),
-                () -> assertTrue(joinedLines.contains(line4)));
+        assertTrue(joinedLines.contains(line1));
+        assertTrue(joinedLines.contains(line2));
+        assertTrue(joinedLines.contains(line3));
+        assertTrue(joinedLines.contains(line4));
+    }
+
+    @Test
+    void shouldJoinAreasWithReversedLines() {
+        LogoClosedArea area1 = new LogoClosedArea(getFirstAreaLines(), Color.BLACK);
+        LogoClosedArea area2 = new LogoClosedArea(getSecondAreaReversedLines(), Color.BLACK);
+
+        List<Line> joinedLines = area1.join(area2).getLines();
+        assertTrue(joinedLines.contains(line1));
+        assertTrue(joinedLines.contains(line2));
+        assertTrue(joinedLines.contains(line3));
+        assertTrue(joinedLines.contains(line4));
     }
 
     private CircularList<Line> getFirstAreaLines() {
@@ -40,6 +52,13 @@ class LogoClosedAreaTest {
         CircularList<Line> lines = new CircularList<>(Line::isConnectedTo);
         lines.add(line3);
         lines.add(line4);
+        return lines;
+    }
+
+    private CircularList<Line> getSecondAreaReversedLines() {
+        CircularList<Line> lines = new CircularList<>(Line::isConnectedTo);
+        lines.add(line4);
+        lines.add(line3);
         return lines;
     }
 }
