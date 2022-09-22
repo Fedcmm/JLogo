@@ -15,6 +15,7 @@
 
 <?import javafx.scene.control.Hyperlink?>
 
+<?import javafx.scene.control.Tooltip?>
 <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="480.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jlogo.app.MainSceneController">
 
     <Pane fx:id="canvasPane">
@@ -42,6 +43,9 @@
                             <Image url="@../icons/icon_trash.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Reset the current program"/>
+                    </tooltip>
                 </Button>
 
                 <Button fx:id="saveButton" disable="true" mnemonicParsing="false" text="Save" onAction="#onSaveClicked">
@@ -50,6 +54,9 @@
                             <Image url="@../icons/icon_save.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Save the current drawings"/>
+                    </tooltip>
                 </Button>
 
                 <Button fx:id="loadButton" mnemonicParsing="false" text="Load" onAction="#onLoadClicked">
@@ -58,6 +65,9 @@
                             <Image url="@../icons/icon_load.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Load a new program"/>
+                    </tooltip>
                 </Button>
 
                 <Button fx:id="nextButton" disable="true" mnemonicParsing="false" text="Next" onAction="#onNextClicked">
@@ -66,6 +76,9 @@
                             <Image url="@../icons/icon_forward.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Execute the next instruction"/>
+                    </tooltip>
                 </Button>
 
                 <Button fx:id="startStopButton" disable="true" mnemonicParsing="false" text="Start" onAction="#onStartStopClicked">
@@ -74,6 +87,9 @@
                             <Image url="@../icons/icon_play.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Start the execution of the program"/>
+                    </tooltip>
                 </Button>
 
             </ToolBar>

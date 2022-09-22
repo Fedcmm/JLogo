@@ -237,6 +237,7 @@ public class MainSceneController {
 
     private void setStartedAppearance() {
         ((ImageView) startStopButton.getGraphic()).setImage(new Image("/icons/icon_pause.png"));
+        startStopButton.getTooltip().setText("Stop the execution of the program");
         startStopButton.setText("Stop");
         resetButton.setDisable(true);
         saveButton.setDisable(true);
@@ -246,6 +247,7 @@ public class MainSceneController {
 
     private void setStoppedAppearance() {
         ((ImageView) startStopButton.getGraphic()).setImage(new Image("/icons/icon_play.png"));
+        startStopButton.getTooltip().setText("Start the execution of the program");
         startStopButton.setText("Start");
         resetButton.setDisable(false);
         saveButton.setDisable(false);

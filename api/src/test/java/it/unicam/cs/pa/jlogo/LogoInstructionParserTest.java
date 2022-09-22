@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LogoInstructionParserTest {
 
-
     @Test
     void shouldThrowIOException() {
         LogoInstructionParser parser = new LogoInstructionParser();
