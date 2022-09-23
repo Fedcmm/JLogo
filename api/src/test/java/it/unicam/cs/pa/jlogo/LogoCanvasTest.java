@@ -43,6 +43,26 @@ class LogoCanvasTest {
         assertEquals(canvas.getHome(), cursor.getPosition());
     }
 
+    @Test
+    void horizontalMovementShouldStopAtEdge() {
+        canvas.moveCursor(1000);
+        assertEquals(600, cursor.getPosition().x());
+
+        canvas.moveCursor(-1000);
+        assertEquals(0, cursor.getPosition().x());
+    }
+
+    @Test
+    void diagonalMovementShouldStopAtEdge() {
+        cursor.rotate(30);
+
+        canvas.moveCursor(1000);
+        assertTrue(Math.abs(cursor.getPosition().x() - 600) < Point.EPSILON);
+
+        canvas.moveCursor(-1000);
+        assertTrue(cursor.getPosition().x() < Point.EPSILON);
+    }
+
 
     private void drawCompleteArea() {
         canvas.moveCursor(50);

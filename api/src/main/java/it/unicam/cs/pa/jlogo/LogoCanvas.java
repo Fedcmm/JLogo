@@ -100,7 +100,7 @@ public class LogoCanvas implements Canvas {
 
     @Override
     public void moveCursor(double distance) {
-        Optional<Line> result = cursor.move(Math.min(distance, calculateMaxDistance()));
+        Optional<Line> result = cursor.move(checkDistance(distance));
         if (result.isEmpty())
             return;
 
@@ -171,8 +171,20 @@ public class LogoCanvas implements Canvas {
         areaListener = listener;
     }
 
-    private double calculateMaxDistance() {
-        double direction = cursor.getDirection();
+
+    private double checkDistance(double distance) {
+        if (distance > 0) {
+            return Math.min(distance, calculateMaxDistance(cursor.getDirection()));
+        }
+        double direction = (cursor.getDirection() + 180) % 360;
+        if (direction < 0) direction += 360;
+        return Math.max(distance, -calculateMaxDistance(direction));
+    }
+
+    /**
+     * Calculates the max distance the cursor can move in the given direction
+     */
+    private double calculateMaxDistance(double direction) {
         Point position = cursor.getPosition();
 
         if (direction == 90)
