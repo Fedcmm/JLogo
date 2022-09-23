@@ -147,11 +147,11 @@ public class CircularList<E> implements Collection<E> {
     }
 
     public E getFirst() {
-        return first.elem;
+        return first == null ? null : first.elem;
     }
 
     public E getLast() {
-        return last.elem;
+        return last == null ? null : last.elem;
     }
 
     /**
@@ -194,12 +194,13 @@ public class CircularList<E> implements Collection<E> {
     private class CircularIterator implements Iterator<E> {
 
         private final int expectedModCount = modCount;
+        private int returned = 0;
         private Node<E> current = first;
 
 
         @Override
         public boolean hasNext() {
-            return current != null;
+            return current != null && (returned == 0 || current != first);
         }
 
         @Override
@@ -211,6 +212,7 @@ public class CircularList<E> implements Collection<E> {
 
             E result = current.elem;
             current = current.next;
+            returned++;
             return result;
         }
     }

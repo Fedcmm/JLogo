@@ -9,14 +9,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Default implementation of {@link ClosedArea}
+ */
 public class LogoClosedArea implements ClosedArea {
 
-    private final CircularList<Line> lines;
+    private final CircularList<Line> lines = new CircularList<>(Line::isConnectedTo);
     private final Color fillColor;
 
 
+    /**
+     * Creates a new area with lines from the given {@link CircularList}
+     *
+     * @param lines the initial lines of the area, can be <code>null</code> or empty
+     * @param fillColor the fill color of the area
+     */
+    @SuppressWarnings("UseBulkOperation")
     public LogoClosedArea(CircularList<Line> lines, Color fillColor) {
-        this.lines = lines;
+        if (lines != null) lines.forEach(this.lines::add);
         this.fillColor = fillColor;
     }
 

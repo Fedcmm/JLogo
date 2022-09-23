@@ -15,6 +15,8 @@ import java.util.function.Consumer;
  */
 public class LogoCursor implements Cursor {
 
+    private final CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
+
     private Point position;
     private double direction;
     private int penSize;
@@ -23,7 +25,6 @@ public class LogoCursor implements Cursor {
     private Color fillColor;
 
     private Consumer<ClosedArea> areaListener;
-    private CircularList<Line> currentLines = new CircularList<>(Line::isConnectedTo);
 
 
     /**
@@ -123,7 +124,7 @@ public class LogoCursor implements Cursor {
     private void callListener() {
         if (areaListener != null && !currentLines.isEmpty()) {
             areaListener.accept(new LogoClosedArea(currentLines, fillColor));
-            currentLines = new CircularList<>(Line::isConnectedTo);
+            currentLines.clear();
         }
     }
 }

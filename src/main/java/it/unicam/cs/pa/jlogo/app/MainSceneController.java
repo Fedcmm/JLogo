@@ -189,15 +189,10 @@ public class MainSceneController {
     }
     //endregion
 
-    private void reset() {
-        setStoppedAppearance();
-
-        logoController.reset();
-        clear();
-    }
-
+    //region File choosers
     private File showSaveFileChooser() {
         FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choose save destination");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plain text files (*.txt)", "*.txt"));
         chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         return chooser.showSaveDialog(canvasPane.getScene().getWindow());
@@ -210,6 +205,7 @@ public class MainSceneController {
         chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         return chooser.showOpenDialog(canvasPane.getScene().getWindow());
     }
+    //endregion
 
     //region Program execution
     private void executeProgramStep(ActionEvent ignoredEvent) {
@@ -295,6 +291,13 @@ public class MainSceneController {
     }
     //endregion
 
+    private void reset() {
+        setStoppedAppearance();
+
+        logoController.reset();
+        clear();
+    }
+
     private void clear() {
         canvasGraphics.clearRect(0, 0, fxCanvas.getWidth(), fxCanvas.getHeight());
     }
@@ -308,7 +311,6 @@ public class MainSceneController {
         infoText.setFill(Color.RED);
         infoText.setText(message);
     }
-
 
     /**
      * Converts a y coordinate value into one compatible with the JavaFx canvas (the 0

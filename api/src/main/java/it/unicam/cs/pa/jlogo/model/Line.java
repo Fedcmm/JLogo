@@ -5,7 +5,7 @@ import it.unicam.cs.pa.jlogo.Point;
 import java.awt.Color;
 
 /**
- * Represents a line in a Logo program
+ * Represents a line drawn between two points in a Logo program
  */
 public interface Line {
 

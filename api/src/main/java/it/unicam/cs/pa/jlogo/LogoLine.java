@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.util.Objects;
 
 /**
- * Represents a line drawn in a Logo program
+ * Default implementation of {@link Line}, represents a straight line
  */
 @SuppressWarnings("ClassCanBeRecord")
 public class LogoLine implements Line {
