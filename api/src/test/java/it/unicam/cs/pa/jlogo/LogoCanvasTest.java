@@ -46,21 +46,43 @@ class LogoCanvasTest {
     @Test
     void horizontalMovementShouldStopAtEdge() {
         canvas.moveCursor(1000);
-        assertEquals(600, cursor.getPosition().x());
+        assertTrue(Math.abs(cursor.getPosition().x() - 600) < Point.EPSILON);
 
         canvas.moveCursor(-1000);
-        assertEquals(0, cursor.getPosition().x());
+        assertTrue(Math.abs(cursor.getPosition().x()) < Point.EPSILON);
     }
 
     @Test
-    void diagonalMovementShouldStopAtEdge() {
+    void verticalMovementShouldStopAtEdge() {
+        cursor.rotate(90);
+
+        canvas.moveCursor(1000);
+        assertTrue(Math.abs(cursor.getPosition().y() - 400) < Point.EPSILON);
+
+        canvas.moveCursor(-1000);
+        assertTrue(Math.abs(cursor.getPosition().y()) < Point.EPSILON);
+    }
+
+    @Test
+    void diagonalMovementShouldStopAtVerticalEdge() {
         cursor.rotate(30);
 
         canvas.moveCursor(1000);
         assertTrue(Math.abs(cursor.getPosition().x() - 600) < Point.EPSILON);
 
         canvas.moveCursor(-1000);
-        assertTrue(cursor.getPosition().x() < Point.EPSILON);
+        assertTrue(Math.abs(cursor.getPosition().x()) < Point.EPSILON);
+    }
+
+    @Test
+    void diagonalMovementShouldStopAtHorizontalEdge() {
+        cursor.rotate(80);
+
+        canvas.moveCursor(1000);
+        assertTrue(Math.abs(cursor.getPosition().y() - 400) < Point.EPSILON);
+
+        canvas.moveCursor(-1000);
+        assertTrue(Math.abs(cursor.getPosition().y()) < Point.EPSILON);
     }
 
 

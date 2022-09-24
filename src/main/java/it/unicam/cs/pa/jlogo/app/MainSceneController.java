@@ -83,6 +83,7 @@ public class MainSceneController {
                 sliderText.setText(String.format("Interval: %.1fs", newValue.doubleValue())));
 
         canvasGraphics = fxCanvas.getGraphicsContext2D();
+        canvasPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
         programTransition.setOnFinished(this::executeProgramStep);
         Platform.runLater(this::initializeLogoController);
     }
