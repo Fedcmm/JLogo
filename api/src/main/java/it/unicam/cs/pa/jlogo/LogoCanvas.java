@@ -172,6 +172,9 @@ public class LogoCanvas implements Canvas {
     }
 
 
+    /**
+     * Checks if the given distance doesn't go out of bounds and returns the maximum distance if it does
+     */
     private double checkDistance(double distance) {
         if (distance > 0) {
             return Math.min(distance, calculateMaxDistance(cursor.getDirection()));
@@ -196,21 +199,21 @@ public class LogoCanvas implements Canvas {
         double intersVertSide;
 
         if (direction > 90 && direction < 270) {
-            intersVertSide = -m * position.x() + position.y();
+            intersVertSide = -m * position.x() + position.y(); // Intersection with left side (x=0)
             if (intersVertSide > 0 && intersVertSide < getHeight())
                 return position.distanceFrom(new Point(0, intersVertSide));
         } else {
-            intersVertSide = m * getWidth() - m * position.x() + position.y();
+            intersVertSide = m * getWidth() - m * position.x() + position.y(); // Intersection with right side (x=width)
             if (intersVertSide > 0 && intersVertSide < getHeight())
                 return position.distanceFrom(new Point(getWidth(), intersVertSide));
         }
 
         if (intersVertSide > getHeight()) {
-            double intersAbove = (getHeight() - position.y() + m * position.x()) / m;
+            double intersAbove = (getHeight() - position.y() + m * position.x()) / m; // Intersection with top side (y=height)
             return position.distanceFrom(new Point(intersAbove, getHeight()));
         }
         if (intersVertSide < 0) {
-            double intersBelow = (-position.y() + m * position.x()) / m;
+            double intersBelow = (-position.y() + m * position.x()) / m; // Intersection with bottom side (y=0)
             return position.distanceFrom(new Point(intersBelow, 0));
         }
         return 0;
