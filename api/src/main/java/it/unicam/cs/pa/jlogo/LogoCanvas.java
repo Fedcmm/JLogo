@@ -220,7 +220,8 @@ public class LogoCanvas implements Canvas {
      * Handles closed areas received from the cursor
      */
     private void receiveClosedArea(ClosedArea area) {
-        areas.add(joinAreas(area));
+        area = joinAreas(area);
+        areas.add(area);
 
         if (area.isComplete()) {
             area.getLines().forEach(lines::remove);

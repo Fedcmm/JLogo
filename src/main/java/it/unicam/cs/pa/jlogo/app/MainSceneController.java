@@ -256,10 +256,10 @@ public class MainSceneController {
     //region Cursor changed
     private void cursorPositionChanged(ObservableValue<? extends Point> ignored1, Point ignored2, Point newValue) {
         TranslateTransition transition = new TranslateTransition(Duration.millis(300), cursorPolygon);
-        transition.setToX(newValue.x() - 10);
-        transition.setToY(convertYCoordinate(newValue.y()) - 10);
         transition.setCycleCount(1);
         transition.setAutoReverse(false);
+        transition.setToX(newValue.x() - 10);
+        transition.setToY(convertYCoordinate(newValue.y()) - 10);
         transition.play();
     }
 
